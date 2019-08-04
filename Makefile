@@ -2,7 +2,8 @@ NAME = minishell
 
 #FLAGS = -Wall -Werror -Wextra
 
-SOURCES =	main.c 
+SOURCES =	main.c \
+			cmd_exit.c
 
 DIR_O = objs
 

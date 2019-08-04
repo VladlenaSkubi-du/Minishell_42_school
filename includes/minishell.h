@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/07/23 17:20:20 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/04 18:00:23 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,13 @@
 
 # include "libft.h"
 # include "ft_printf.h"
+
+# define BUF_SIZE   1024
+
+/*
+**The list of builtins we have to implement: echo, cd, setenv, unsetenv, env, exit
+*/
+
+void        cmd_exit(void);
 
 #endif
