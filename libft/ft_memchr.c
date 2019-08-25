@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit.c                                         :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sschmele <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 18:16:16 by sschmele         ###   ########.fr       */
+/*   Created: 2018/11/27 14:09:03 by sschmele          #+#    #+#             */
+/*   Updated: 2018/12/04 18:11:56 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void        cmd_exit(char *cmd)
+void		*ft_memchr(const void *s, int c, size_t n)
 {
-    ft_putendl("exit");
-    reset_canonical_input();
-    free(cmd);
-    exit(1);
+	unsigned char	*p;
+
+	p = (unsigned char*)s;
+	while (n--)
+	{
+		if (*p == (unsigned char)c)
+			return (p);
+		p++;
+	}
+	return (NULL);
 }

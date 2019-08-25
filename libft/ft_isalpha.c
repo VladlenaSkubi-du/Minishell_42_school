@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit.c                                         :+:      :+:    :+:   */
+/*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sschmele <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 18:16:16 by sschmele         ###   ########.fr       */
+/*   Created: 2018/11/22 13:42:35 by sschmele          #+#    #+#             */
+/*   Updated: 2018/12/06 11:51:24 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void        cmd_exit(char *cmd)
+int		ft_isalpha(int c)
 {
-    ft_putendl("exit");
-    reset_canonical_input();
-    free(cmd);
-    exit(1);
+	if (c >= 'a' && c <= 'z')
+		return (1);
+	else if (c >= 'A' && c <= 'Z')
+		return (1);
+	else
+		return (0);
 }

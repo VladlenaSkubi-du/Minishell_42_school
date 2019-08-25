@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit.c                                         :+:      :+:    :+:   */
+/*   ft_lstdelcont.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sschmele <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 18:16:16 by sschmele         ###   ########.fr       */
+/*   Created: 2018/12/22 16:45:58 by sschmele          #+#    #+#             */
+/*   Updated: 2018/12/22 17:23:36 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void        cmd_exit(char *cmd)
+void		ft_lstdelcont(void *content, size_t size)
 {
-    ft_putendl("exit");
-    reset_canonical_input();
-    free(cmd);
-    exit(1);
+	(void)size;
+	free(content);
 }

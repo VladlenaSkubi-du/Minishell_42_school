@@ -30,6 +30,20 @@
     //     ft_printf("My child PID=%d\n", process);
     // }
 
+// static void     check_command(char *s)
+// {
+//     if (ft_strchri(s, ';') != -1)
+//         ft_putendl("THERE IS IT ;");
+//     if (ft_strcmp(s, "cd\n") == 0)
+//         ft_putendl("cd");
+//     else if (ft_strcmp(s, "echo\n") == 0)
+//         ft_putendl("echo");
+//     // else if (ft_strcmp(s, "exit\n") == 0)
+//     //     cmd_exit(NULL);
+//     else
+//         ft_putendl("OTHER");
+// }
+
 BASH: for ^D
 
 bash-3.2$ exit
@@ -42,3 +56,13 @@ bash-3.2$
 #define SIGILL  4   /* Illegal instruction. */ 
 #define SIGTRAP 5   /* Trace trap. */ 
 #define SIGABRT 6   /* Abort. */
+
+struct termios {
+    tcflag_t c_iflag;      /* input modes */
+    tcflag_t c_oflag;      /* output modes */
+    tcflag_t c_cflag;      /* control modes */
+    tcflag_t c_lflag;      /* local modes */ - (ICANON - “canonical” mode – also known as “line editing” mode), (ECHO),
+                                                (ISIG - ^C and ^Z (and friends) generate signals or not)
+    cc_t     c_cc[NCCS];   /* control chars */ (VINTR – Generate a SIGINT (^C by default), 
+                                                (VSUSP – Generate a SIGTSTP (stop the program) (^Z by default))
+}

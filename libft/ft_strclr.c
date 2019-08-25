@@ -1,21 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit.c                                         :+:      :+:    :+:   */
+/*   ft_strclr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sschmele <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 18:16:16 by sschmele         ###   ########.fr       */
+/*   Created: 2018/12/02 14:48:00 by sschmele          #+#    #+#             */
+/*   Updated: 2018/12/02 15:12:11 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void        cmd_exit(char *cmd)
+void		ft_strclr(char *s)
 {
-    ft_putendl("exit");
-    reset_canonical_input();
-    free(cmd);
-    exit(1);
+	if (s)
+		ft_bzero(s, ft_strlen(s));
 }

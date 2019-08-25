@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit.c                                         :+:      :+:    :+:   */
+/*   ft_mapdel.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sschmele <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 18:16:16 by sschmele         ###   ########.fr       */
+/*   Created: 2019/01/13 13:43:43 by sschmele          #+#    #+#             */
+/*   Updated: 2019/01/13 13:45:56 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void        cmd_exit(char *cmd)
+void			ft_mapdel(char **map, int i)
 {
-    ft_putendl("exit");
-    reset_canonical_input();
-    free(cmd);
-    exit(1);
+	if (map == NULL || i < 1)
+		return ;
+	while (i)
+	{
+		free(map[i]);
+		i--;
+	}
+	free(map);
 }

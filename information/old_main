@@ -1,0 +1,157 @@
+#include "minishell.h"
+#define BUF_SIZE 1024
+#define MAXLINE 1024
+
+static void check_command(char *s)
+{
+    if (ft_strchri(s, ';') != -1)
+        ft_putendl("THERE IS IT ;");
+    if (ft_strcmp(s, "cd\n") == 0)
+        ft_putendl("cd");
+    else if (ft_strcmp(s, "echo\n") == 0)
+        ft_putendl("echo");
+    else if (ft_strcmp(s, "exit\n") == 0)
+    {
+        ft_putendl("exit");
+        exit (1);
+    }
+    else
+        ft_putendl("OTHER");
+}
+
+void    handle_sig(int sig) 
+{ 
+    if (sig == 1)
+        printf("Hangup the process %d\n", sig);
+    else if (sig == 2)
+        printf("Interrupt the process %d\n", sig);
+    else if (sig == 3)
+        printf("Quit the process %d\n", sig);
+    else if (sig == 4)
+        printf("Illegal instruction %d\n", sig);
+    else if (sig == 5)
+        printf("Trace trap %d\n", sig);
+    else if (sig == 6)
+        printf("Abort %d\n", sig);
+}
+
+// static void     signal_check(void)
+// {
+//     //signal(SIGHUP, handle_sig);
+//     printf("%s\n", signal(SIGINT, handle_sig));
+//     // signal(SIGQUIT, handle_sig);
+//     // signal(SIGILL, handle_sig);
+//     // signal(SIGTRAP, handle_sig);
+//     // signal(SIGABRT, handle_sig);
+// }
+
+int         main(void)
+{
+    char buf[MAXLINE]; /* из apue.h */
+    pid_t pid;
+    int status;
+ 
+    printf("%% "); /* вывести приглашение (printf требует использовать */
+    /* последовательность %%, чтобы вывести символ %) */
+    while (fgets(buf, MAXLINE, stdin) != NULL) 
+    {
+        if (buf[strlen(buf) - 1] == '\n')
+            buf[strlen(buf) - 1] = 0; /* заменить символ перевода строки */
+        if ((pid = fork()) < 0) 
+        {
+            ft_putendl("fork error");
+        }
+        else if (pid == 0) 
+        { /* дочерний процесс */
+            execlp(buf, buf, (char *)0);
+            printf("can't make: %s\n", buf);
+            exit(127);
+        }
+        /* родительский процесс */
+        if ((pid = waitpid(pid, &status, 0)) < 0)
+            ft_putendl("waitpid error");
+        printf("%% ");
+    }
+    ft_putchar('\n');
+    exit(0);
+    // int     ret;
+    // char    command[BUF_SIZE + 1];
+
+    // while (1)
+    // {
+	// 	ft_putstr("$> ");
+    //     if (signal(SIGINT, handle_sig))
+    //     ret = read(STDIN_FILENO, command, BUF_SIZE);
+    //     if (command[ret - 1] == '\n')
+    //         check_command(command);
+    //     if (ret == 0 || command[ret - 1] == '\0')
+    //     {
+    //         ft_putendl("exit");
+    //         exit(1);
+    //     }
+    //     ft_bzero(command, BUF_SIZE + 1);
+    // }
+    // exit(0);
+}
+
+while (*envp++)
+    {
+        printf("%s\n", *envp);
+    } 
+
+Version 25.08 10:48
+
+static void         noncanonical_input(void)
+{
+    struct termios  backup_tty;
+    struct termios  tty;
+    char            c;
+
+    // if (!isatty(0))
+    //     error('T');
+    tcgetattr (0, &tty);
+    backup_tty = tty;
+    printf("%ld\n", tty.c_lflag);
+    tty.c_lflag &= ~(ICANON | ECHO | ISIG);
+    tty.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);
+    tty.c_cflag &= ~(CSIZE | PARENB);
+    tty.c_oflag &= ~(OPOST);
+    tty.c_cflag |= CS8;
+    printf("%ld\n", tty.c_lflag);
+    tty.c_cc[VMIN] = 1;
+    tty.c_cc[VTIME] = 0;
+    tty.c_cc[VINTR] = _POSIX_VDISABLE;
+    fflush (stdout);
+    while (1)
+    {
+        display_prompt();
+        read(0, &c, 1);
+        if (c == '\n')
+            continue ;
+        else if (c == 'D')
+            break;
+    }
+    tcsetattr (0, TCSAFLUSH, &backup_tty);
+    ft_putendl(0);
+    exit(0);
+}
+
+OLD REDLINE
+        else if ((c >= ' ' && c <= '~')
+        {
+            write(STDOUT_FILENO, &c, 1);
+            if (i >= max - 1)
+            {
+                cmd = ft_realloc(*cmd, max, max * 2);
+                max *= 2;
+            }
+            *cmd[++i] = c;
+            if (c == '#')
+                signal = 1;
+        }
+    }
+    *cmd[i] = '\0';
+    if ((*cmd[0] == '^' && *cmd[1] == 'C') || (*cmd[0] == ':' && i == 1) || signal == 1)
+        return (1);
+    else if (*cmd[0] == '^' && *cmd[1] == 'D')
+        return (-1);

@@ -6,58 +6,61 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/04 18:01:51 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/25 18:51:27 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void     check_command(char *s)
+/*
+**'T' means terminal
+*/
+
+static void         error(char c)
 {
-    if (ft_strchri(s, ';') != -1)
-        ft_putendl("THERE IS IT ;");
-    if (ft_strcmp(s, "cd\n") == 0)
-        ft_putendl("cd");
-    else if (ft_strcmp(s, "echo\n") == 0)
-        ft_putendl("echo");
-    else if (ft_strcmp(s, "exit\n") == 0)
-        cmd_exit();
-    else
-        ft_putendl("OTHER");
+    if (c == 'T')
+        ft_putendl("Stdin is not terminal. The program is finished");
+    exit(1);
 }
 
-static void     handle_sigint(int sig)
+/*
+**After the program is finished terminal should be set to canonical input.
+*/
+
+void                reset_canonical_input(void)
 {
-    ft_putchar('\n');
-    ft_putstr("$> "); //correct
+    tcsetattr (STDIN_FILENO, TCSANOW, &g_backup_tty);
 }
 
-static void     check_signal(void)
+/*
+**Here we change the canonical input to non-canonical, not to react on
+**combinations: ^C, ^Z, ^Q, ^S as default. After the program finished terminal
+**should be set to canonical input.
+*/
+
+void                set_noncanonical_input(void)
 {
-    signal(SIGINT, handle_sigint);
+    struct termios  tty;
+
+    if (!isatty(0))
+        error('T');
+    tcgetattr (STDIN_FILENO, &tty);
+    g_backup_tty = tty;
+    tty.c_lflag &= ~(ICANON | ECHO | ISIG);
+    tcsetattr (STDIN_FILENO, TCSAFLUSH, &tty);
 }
 
-static void     command_line(void)
+int                 main(int argc, char **argv, char **envp)
 {
-    char        command[BUF_SIZE + 1];
-    int         bytes_read;
-
+    int             ret;
+    
+    set_noncanonical_input();
     while (1)
     {
-        check_signal();
-        ft_putstr("$> "); //correct
- 
-        bytes_read = read(STDIN_FILENO, command, BUF_SIZE);
-        if (command[bytes_read - 1] == '\n')
-            check_command(command);
-        if (bytes_read == 0)
-            cmd_exit();
-        ft_bzero(command, BUF_SIZE + 1);
+        display_prompt();
+        if (readline() == 1)
+            continue;
     }
-}
-
-int             main(void)
-{
-    command_line();
+    reset_canonical_input();
     return (0);
 }
