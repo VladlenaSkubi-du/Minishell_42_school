@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 19:32:05 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/26 17:16:52 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # define BUF_SIZE       1024
 # define NEXTLINE       1
 # define SEVERAL        2
+# define LEFRIG         3
 
 //char                **g_envn;
 struct termios          g_backup_tty;
