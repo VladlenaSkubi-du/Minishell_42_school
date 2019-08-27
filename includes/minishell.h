@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/27 14:50:02 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/27 18:33:42 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include "ft_printf.h"
 
 # define BUF_SIZE       1024
+# define MAX            3;
 # define FLAG_NL        0x1 //next line
 # define FLAG_SCMD      0x2 //several commands
 # define FLAG_ESC       0x4 //there was '\033'

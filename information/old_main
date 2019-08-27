@@ -281,3 +281,62 @@ void            display_prompt(void)
 {
     ft_putstr("$> ");
 }
+
+THE LAST Version
+// max = 50;
+    // cmd = (char*)ft_xmalloc(max);
+    // i = -1;
+    // sig = 0;
+    // get_terminal_width(term);
+    while (c != '\n')
+    {
+        read(STDIN_FILENO, &c, 1);
+        if (ft_isprint(c) && !(sig & FLAG_ESC))
+        {
+            all[2]++;
+            write(STDOUT_FILENO, &c, 1);
+            (c == ';') ? sig |= FLAG_SCMD : 0;
+            (c == '#' || c == ':') ? sig |= FLAG_NL : 0;
+            if (i >= max - 1)
+            {
+                cmd = ft_realloc(cmd, max, max * 2);
+                max *= 2;
+            }
+            cmd[i] = c;
+        }
+        
+        //reaction for signals
+        if (c == 3 || c == 10 || c == 13)
+        {
+            ft_putchar('\n');
+            return (1);
+        }
+        (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
+        
+        //switches
+        (c == '\033') ? sig |= FLAG_ESC : 0;
+        (c == 91 && (sig & FLAG_ESC)) ? sig |= FLAG_OSQBRK : 0;
+        if (c == 68 && (sig & FLAG_ESC) && (sig & FLAG_OSQBRK))
+        {
+            if (i >= 0)
+            {
+                write(STDOUT_FILENO, "\033[D", 3);
+                i--;
+            }
+        }
+        else if (c == 67 && (sig & FLAG_ESC) && (sig & FLAG_OSQBRK))
+        {
+            write(STDOUT_FILENO, "\033[C", 3);
+            i++;
+        }
+
+        //delete
+        if (c == 127)
+        {
+            if (i >= 0)
+            {
+                write(STDOUT_FILENO, "\033[D \033[D", 7);
+                (i >= 0) ? cmd[i] = '\0' : 0;
+                i--;
+            }
+        }
