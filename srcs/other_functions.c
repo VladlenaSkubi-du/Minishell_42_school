@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 18:48:27 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/27 18:27:47 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/28 17:30:21 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,13 @@ void        *ft_realloc(void *subj, int len_subj, int len_needed)
     ft_bzero(ptr + len_subj, len_needed - len_subj);
     free(subj);
     return (ptr);
+}
+
+void	    get_terminal_width(unsigned int *term)
+{
+	struct winsize	sz;
+
+	ioctl(1, TIOCGWINSZ, &sz);
+    term[0] = sz.ws_col;
+    term[1] = sz.ws_row;
 }

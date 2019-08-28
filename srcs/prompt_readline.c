@@ -6,25 +6,25 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/27 18:33:44 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/08/28 20:02:37 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	    get_terminal_width(int *term)
+static int     nl_exit_signals(char c, char *cmd, unsigned int *all)
 {
-	struct winsize	sz;
-
-	ioctl(1, TIOCGWINSZ, &sz);
-    term[0] = sz.ws_col;
-    term[1] = sz.ws_row;
-}
-
-static int     some_signals(char c, char *cmd, int *all)
-{
-    if (c == 3 || c == 10 || c == 13)
+    if (c == 3 || c == 10 || c == 13 || c == '\n')
     {
+        ft_putchar('\n');
+        ft_putstr(cmd);
+        if (all[4])
+            while (all[3] != all[2])
+            {
+                write(STDOUT_FILENO, "\033[C", 3);
+                all[3]++;
+            }
+        free(cmd);
         ft_putchar('\n');
         return (1);
     }
@@ -32,19 +32,60 @@ static int     some_signals(char c, char *cmd, int *all)
     return (0);
 }
 
-static char     *printable_parce(char c, int *all, char *cmd)
+static char     *printable_parce(char c, char *cmd, unsigned int *all)
 {
-    all[3]++;
+    char        swap;
+    
+    if (all[2] == PROMPT && all[3] != all[2])
+    {
+        while (all[2] != all[3])
+        {
+            cmd[all[2] - PROMPT] = ' ';
+            all[2]++;
+        }
+    }
+    else if (all[2] > PROMPT && all[3] != all[2])
+    {
+        if (ft_strlen(cmd) >= all[0] - 1)
+        {
+            cmd = ft_realloc(cmd, all[0], all[0] * 2);
+            all[0] *= 2;
+        }
+    }
+    ++all[3];
     write(STDOUT_FILENO, &c, 1);
     (c == ';') ? all[1] |= FLAG_SCMD : 0;
     (c == '#' || c == ':') ? all[1] |= FLAG_NL : 0;
     if (all[2] >= all[0] - 1)
     {
         cmd = ft_realloc(cmd, all[0], all[0] * 2);
-        //cmd = realloc(cmd, all[0] * 2);
         all[0] *= 2;
     }
-    cmd[all[2]++] = c;
+    cmd[all[2] - PROMPT] = c;
+    all[2]++;
+    return (cmd);
+}
+
+static char     *esc_leftright(char c, char *cmd, unsigned int *all)
+{
+    all[4] = (all[3] >= all[5]) ? all[3] / all[5] : 0;
+    
+    (c == 91 && (all[1] & FLAG_ESC)) ? all[1] |= FLAG_OSQBRK : 0;
+    if (c == 68 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] > PROMPT)
+    {
+        all[3]--;           
+        write(STDOUT_FILENO, "\033[D", 3);
+    }
+    else if (c == 67 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] < all[5] - 1)
+    {
+        if (all[4])
+        {
+            write(STDOUT_FILENO, "\f", 1);
+        }
+        all[3]++;
+        write(STDOUT_FILENO, "\033[C", 3);
+    }
+    //printf("%d\n", all[4]);
     return (cmd);
 }
 
@@ -63,54 +104,29 @@ static char     *printable_parce(char c, int *all, char *cmd)
 int            readline(void)
 {
     char                *cmd;
-    int                 all[6];
+    unsigned int        all[7];
     unsigned char       c;
 
     all[0] = MAX;
     cmd = (char*)ft_xmalloc(all[0]);
     all[1] = 0;
-    all[2] = 0;
-    all[3] = 0;
-    get_terminal_width(&all[4]);
+    all[2] = PROMPT;
+    all[3] = PROMPT;
+    all[4] = 0;
+    get_terminal_width(&all[5]);
+    //printf("%d - %d - %d - %d - %d - %d\n", all[0], all[1], all[2], all[3], all[4], all[5]);
 
-    while (c != '\n')
+    while (1)
     {
         read(STDIN_FILENO, &c, 1);
-        if (c == 3 || c == 4 || c == 10 || c == 13)
-            return (some_signals(c, cmd, all));
+        if (c == 3 || c == 4 || c == 10 || c == 13 || c == '\n')
+            return (nl_exit_signals(c, cmd, all));
         if (ft_isprint(c) && !(all[1] & FLAG_ESC))
-        {
-            cmd = printable_parce(c, all, cmd);
-            // ft_putchar('\n');
-            // ft_putendl(cmd);
-            // all[3]++;
-            // write(STDOUT_FILENO, &c, 1);
-            // (c == ';') ? all[1] |= FLAG_SCMD : 0;
-            // (c == '#' || c == ':') ? all[1] |= FLAG_NL : 0;
-            // if (all[2] >= all[0] - 1)
-            // {
-            //     cmd = ft_realloc(cmd, all[0], all[0] * 2);
-            //     all[0] *= 2;
-            // }
-            // cmd[all[2]++] = c;
-        }
+            cmd = printable_parce(c, cmd, all);
+        (c == '\033') ? all[1] |= FLAG_ESC : 0; //turn on the flag_esc
+        cmd = (all[1] & FLAG_ESC) ? esc_leftright(c, cmd, all) : cmd;
+        ((c == 'D' || c == 'C') && (all[1] & FLAG_ESC)) ? all[1] ^= FLAG_ESC : 0; //turn off the flag_esc
        
-        //switches
-        (c == '\033') ? all[1] |= FLAG_ESC : 0;
-        (c == 91 && (all[1] & FLAG_ESC)) ? all[1] |= FLAG_OSQBRK : 0;
-        if (c == 68 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK))
-        {
-            if (all[3] >= 0)
-            {
-                write(STDOUT_FILENO, "\033[D", 3);
-                all[3]--;
-            }
-        }
-        else if (c == 67 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK))
-        {
-            write(STDOUT_FILENO, "\033[C", 3);
-            all[3]++;
-        }
 
         //delete
         if (c == 127 && all[2] > 0)
@@ -120,58 +136,8 @@ int            readline(void)
             (all[2] > 0) ? cmd[all[2]] = '\0' : 0;
             all[2]--;
         }
-       
-        // read(STDIN_FILENO, &c, 1);
-        // if (ft_isprint(c) && !(sig & FLAG_ESC))
-        // {
-        //     all[2]++;
-        //     write(STDOUT_FILENO, &c, 1);
-        //     (c == ';') ? sig |= FLAG_SCMD : 0;
-        //     (c == '#' || c == ':') ? sig |= FLAG_NL : 0;
-        //     if (i >= max - 1)
-        //     {
-        //         cmd = ft_realloc(cmd, max, max * 2);
-        //         max *= 2;
-        //     }
-        //     cmd[i] = c;
-        // }
-        
-        // //reaction for signals
-        // if (c == 3 || c == 10 || c == 13)
-        // {
-        //     ft_putchar('\n');
-        //     return (1);
-        // }
-        // (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
-        
-        // //switches
-        // (c == '\033') ? sig |= FLAG_ESC : 0;
-        // (c == 91 && (sig & FLAG_ESC)) ? sig |= FLAG_OSQBRK : 0;
-        // if (c == 68 && (sig & FLAG_ESC) && (sig & FLAG_OSQBRK))
-        // {
-        //     if (i >= 0)
-        //     {
-        //         write(STDOUT_FILENO, "\033[D", 3);
-        //         i--;
-        //     }
-        // }
-        // else if (c == 67 && (sig & FLAG_ESC) && (sig & FLAG_OSQBRK))
-        // {
-        //     write(STDOUT_FILENO, "\033[C", 3);
-        //     i++;
-        // }
-
-        // //delete
-        // if (c == 127)
-        // {
-        //     if (i >= 0)
-        //     {
-        //         write(STDOUT_FILENO, "\033[D \033[D", 7);
-        //         (i >= 0) ? cmd[i] = '\0' : 0;
-        //         i--;
-        //     }
-        // }
     }
+    free(cmd);
     return (0);
 }
 
