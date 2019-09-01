@@ -3,7 +3,8 @@ NAME = minishell
 FLAGS = -g
 
 SOURCES =	main.c \
-			prompt_readline.c \
+			readline.c \
+			cmd_readline_changes.c \
 			commands_check.c \
 			other_functions.c \
 			cmd_exit.c 

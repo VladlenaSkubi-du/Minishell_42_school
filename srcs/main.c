@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/26 18:08:07 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/01 16:14:10 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ static void         error(char c)
 /*
 **After the program is finished terminal should be set to canonical input.
 */
+
+void            display_prompt(void)
+{
+    ft_putstr("$> ");
+}
 
 void                reset_canonical_input(void)
 {

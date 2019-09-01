@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/28 19:34:21 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/01 16:22:39 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@
 # define FLAG_SCMD      0x2 //several commands
 # define FLAG_ESC       0x4 //there was '\033'
 # define FLAG_OSQBRK    0x8 //there was an open square bracket '['
-# define FLAG_A         0x10
 
 //char                **g_envn;
 struct termios          g_backup_tty;
@@ -47,13 +46,15 @@ struct termios          g_backup_tty;
 
 void                    set_noncanonical_input(void);
 void                    reset_canonical_input(void);
+void                    display_prompt(void);
 
 /*
-**The list of working functions - file prompt_readline.c
+**The list of working functions - file eadline.c and cmd_readline_changes.c
 */
 
-void                    display_prompt(void);
 int                     readline(void);
+char                    *str_add_symbol(char *arr, char add, unsigned int *all);
+char                    *str_del_symbol(char *arr, unsigned int *all);
 
 /*
 **The list of working functions - file commands_check.c
