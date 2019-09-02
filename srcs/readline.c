@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/01 18:29:34 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/02 20:46:50 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,29 +38,21 @@ static int     nl_exit_signals(char c, char *cmd, unsigned int *all)
     return (0);
 }
 
+/*
+**Here we print and add a printable symble to the command-line.
+*/
+
 static char     *printable_parce(char c, char *cmd, unsigned int *all)
 {
     if (all[2] == PROMPT && all[3] != all[2])
     {
         while (all[2] != all[3])
-        {
-            cmd[all[2] - PROMPT] = ' ';
-            all[2]++;
-        }
+            cmd = str_add_symbol(cmd, ' ', all);
     }
-    // else if (all[2] > PROMPT && all[3] != all[2])
-    // {
-    //     if (ft_strlen(cmd) >= all[0] - 1)
-    //     {
-    //         cmd = ft_realloc(cmd, all[0], all[0] * 2);
-    //         all[0] *= 2;
-    //     }
-    // }
-    ++all[3];
-    write(STDOUT_FILENO, &c, 1);
+    (all[2] <= all[3]) ? write(STDOUT_FILENO, &c, 1) : 0;
+    cmd = str_add_symbol(cmd, c, all);
     (c == ';') ? all[1] |= FLAG_SCMD : 0;
     (c == '#' || c == ':') ? all[1] |= FLAG_NL : 0;
-    cmd = str_add_symbol(cmd, c, all);
     return (cmd);
 }
 
@@ -83,34 +75,16 @@ static void     esc_leftright(char c, char *cmd, unsigned int *all)
         all[3]++;
         write(STDOUT_FILENO, "\033[C", 3);
     }
-    //printf("%d\n", all[4]);
-    //return (cmd);
 }
 
-/*
-**The structure all consists of:
-**all[0] = maximal command string size;
-**all[1] = signal-flags;
-**all[2] = counter of the cursor: how much in input and deleted -
-**printable symbols in fact;
-**all[3] = counter of the cursor: to input or delete
-**in the final command-string;
-**all[4] = nb of strings printed;
-**all[5] = terminal width;
-**all[6] = terminal rows number;
-**all[7] = usable in different functions;
-*/
-
-static void             init_all(unsigned int *all)
+static char     *delete_symbol(char *cmd, unsigned int *all)
 {
-    all[0] = MAX;
-    all[1] = 0;
-    all[2] = PROMPT;
-    all[3] = PROMPT;
-    all[4] = 0;
-    get_terminal_width(&all[5]);
-    all[7] = 0;
-    //printf("%d - %d - %d - %d - %d - %d\n", all[0], all[1], all[2], all[3], all[4], all[5]);
+    all[3]--;
+    write(STDOUT_FILENO, "\033[D \033[D", 7);
+    cmd = str_del_symbol(cmd, all);
+    // (all[2] > 0) ? cmd[all[2]] = '\0' : 0;
+    // all[2]--;
+    return (cmd);
 }
 
 int            readline(void)
@@ -128,9 +102,11 @@ int            readline(void)
             return (nl_exit_signals(c, cmd, all));
         if (ft_isprint(c) && !(all[1] & FLAG_ESC))
             cmd = printable_parce(c, cmd, all);
-        (c == '\033') ? all[1] |= FLAG_ESC : 0; //turn on the flag_esc
+        (c == '\033') ? all[1] |= FLAG_ESC : 0;
         (all[1] & FLAG_ESC) ? esc_leftright(c, cmd, all) : 0;
-        ((c == 'D' || c == 'C') && (all[1] & FLAG_ESC)) ? all[1] ^= FLAG_ESC : 0; //turn off the flag_esc
+        ((c == 'D' || c == 'C') && (all[1] & FLAG_ESC)) ? all[1] ^= FLAG_ESC : 0;
+        (c == 127 && all[2] > 0 && all[3] > PROMPT) ? cmd = delete_symbol(cmd, all) : 0;
+
 
         // //delete
         // if (c == 127 && all[2] > 0)

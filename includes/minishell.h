@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/01 16:22:39 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/02 19:25:46 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void                    reset_canonical_input(void);
 void                    display_prompt(void);
 
 /*
-**The list of working functions - file eadline.c and cmd_readline_changes.c
+**The list of working functions - file readline.c and cmd_readline_changes.c
 */
 
 int                     readline(void);
@@ -74,5 +74,6 @@ void                    cmd_exit(char *cmd);
 void                    *ft_xmalloc(size_t size);
 void                    *ft_realloc(void *subj, int len_subj, int len_needed);
 void                    get_terminal_width(unsigned int *term);
+void                    init_all(unsigned int *all);
 
 #endif
