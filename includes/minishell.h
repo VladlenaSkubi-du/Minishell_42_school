@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/02 19:25:46 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 13:23:45 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 # include "libft.h"
 # include "ft_printf.h"
 
-# define BUF_SIZE       1024
 # define MAX            5
 # define PROMPT         3
 # define FLAG_NL        0x1 //next line
@@ -37,7 +36,7 @@
 # define FLAG_ESC       0x4 //there was '\033'
 # define FLAG_OSQBRK    0x8 //there was an open square bracket '['
 
-//char                **g_envn;
+char                    **g_envn;
 struct termios          g_backup_tty;
 
 /*
@@ -47,23 +46,36 @@ struct termios          g_backup_tty;
 void                    set_noncanonical_input(void);
 void                    reset_canonical_input(void);
 void                    display_prompt(void);
+void                    save_environment(int argc, char **argv, char **envp);
 
 /*
-**The list of working functions - file readline.c and cmd_readline_changes.c
+**The list of working functions - file readline.c
 */
 
 int                     readline(void);
+char                    *delete_symbol(char *cmd, unsigned int *all);
+void                    esc_leftright(char c, char *cmd, unsigned int *all);
+char                    *printable_parce(char c, char *cmd, unsigned int *all);
+int                     nl_signals(char c, char *cmd, unsigned int *all);
+
+/*
+**The list of working functions - file cmd_readline_changes.c
+*/
+
 char                    *str_add_symbol(char *arr, char add, unsigned int *all);
 char                    *str_del_symbol(char *arr, unsigned int *all);
+char                    *help_str_change(char *cmd, char *swap,
+                            int point, char add);
 
 /*
 **The list of working functions - file commands_check.c
 */
 
-int                     check_command(char **cmd);
+void                    check_command(char *cmd);
 
 /*
-**The list of builtins we have to implement: echo, cd, setenv, unsetenv, env, exit
+**The list of builtins we have to implement: echo, cd, setenv, unsetenv, env,
+**exit
 */
 
 void                    cmd_exit(char *cmd);

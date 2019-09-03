@@ -6,17 +6,14 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/25 13:54:14 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 13:04:42 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int         check_command(char **cmd)
+void         check_command(char *cmd)
 {
-    if (ft_strcmp(cmd[0], "exit") == 0)
-        return (1);
-    else
-        ft_putendl("COMMAND_CHECK");
-    return (0);
+    ft_putendl(cmd);
+    (ft_strncmp(cmd, "exit", 4) == 0) ? cmd_exit(cmd) : 0;
 }

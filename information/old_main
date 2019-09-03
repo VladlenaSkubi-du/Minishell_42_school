@@ -340,3 +340,38 @@ THE LAST Version
                 i--;
             }
         }
+
+STR_ADD_SYMBOL
+char            *new;
+    int             i;
+    
+    i = all[3] - PROMPT;
+    all[7] = ft_strlen(cmd) + 1 + 1;
+    new = (all[7] > all[0]) ? (char*)ft_xmalloc((all[0] = all[0] *
+        (all[7] / all[0] + 1))) : (char*)ft_xmalloc(all[0]);
+    // ft_putnbr(all[0]);
+    // ft_putchar('\n');
+    if (!(cmd[i] >= ' ' && cmd[i] <= '~'))
+    {
+        ft_strcpy(new, cmd); //add to the end of the string
+        if (cmd[i - 1] == '\0') //counter is among '\0'
+        {
+            while (i > 0 && new[i - 1] == '\0')
+                i--;
+            all[3] = i + PROMPT;
+        }
+    }
+    if (cmd[i] != '\0') //add to some part of the string
+    {
+        ft_strncpy(new, cmd, i);
+        ft_strcpy(new + i + 1, cmd + i);
+    }
+    new[i] = add;
+    all[3]++;
+    all[2]++;
+    free(cmd);
+
+    {
+            cmd[all[2] - PROMPT] = ' ';
+            all[2]++;
+        }

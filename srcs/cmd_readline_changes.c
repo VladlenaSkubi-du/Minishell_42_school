@@ -6,35 +6,36 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/02 20:47:34 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 13:23:39 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static char *help_str_change(char *cmd, char *swap, int point, char add)
+char        *help_str_change(char *cmd, char *swap, int point, char add)
 {
     int     i;
+    int     len;
 
     i = -1;
+    len = ft_strlen(swap);
     if (add > 0)
     {
         while (swap[++i])
             cmd[point + 1 + i] = swap[i];
-        i = ft_strlen(swap);
         write(STDOUT_FILENO, &add, 1);
-        write(STDOUT_FILENO, swap, i);
-        while (i--)
+        write(STDOUT_FILENO, swap, len);
+        while (len--)
             write(STDOUT_FILENO, "\033[D", 3);
     }
     else
     {
         while (swap[++i])
             cmd[point + i] = swap[i];
-        i = ft_strlen(swap);
-        write(STDOUT_FILENO, "\033[D \033[D", 7);
-        write(STDOUT_FILENO, swap, i);
-        while (i--)
+        cmd[point + i] = '\0';
+        write(STDOUT_FILENO, swap, len);
+        write(STDOUT_FILENO, " ", 1);
+        while (len-- >= 0)
             write(STDOUT_FILENO, "\033[D", 3);
     }
     return (cmd);
@@ -124,14 +125,13 @@ char        *str_del_symbol(char *cmd, unsigned int *all)
         cmd = ft_realloc(cmd, all[0], all[0] / 2);
         all[0] /= 2;
     }
-    if (fact > point)
+    (fact - 1 == point) ? cmd[--fact] = '\0' : 0;
+    if (fact - 1 > point)
     {
-        swap = ft_strdup(cmd + point);
+        swap = ft_strdup(cmd + point + 1);
         cmd = help_str_change(cmd, swap, point, -1);
         free(swap);
     }
-    //(fact == point) ? all[3]-- : 0;
-    (fact <= point) ? cmd[fact] = '\0' : 0;
     all[2]--;
     return (cmd);
 }
