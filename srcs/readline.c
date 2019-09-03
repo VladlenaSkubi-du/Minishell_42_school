@@ -6,36 +6,37 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 13:28:30 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 17:01:18 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int             nl_signals(char c, char *cmd, unsigned int *all)
+/*
+**Here we go further to the analysis of the ready cmd-line or come back to the
+**main-fucntion and print prompt.
+*/
+
+int             nl_signals(char c, char *cmd, unsigned int *all, char **envp)
 {
     char        **scmd;
     int         i;
     
     i = 0;
-    if (all[4])
-    {
-        while (all[3] != all[2])
-        {
-            write(STDOUT_FILENO, "\033[C", 3);
-            all[3]++;
-        }
-    }
+    help_nl_signal(all);
     ft_putchar('\n');
-    if (all[1] & FLAG_SCMD)
+    if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FLAG_NL))
     {
-        scmd = ft_strsplit(cmd, ';');
-        while (scmd[i])
-            check_command(scmd[i++]);
-        ft_mapdel(scmd, i);
+        if (all[1] & FLAG_SCMD)
+        {
+            scmd = ft_strsplit(cmd, ';');
+            while (scmd[i])
+                check_command(scmd[i++], envp);
+            ft_mapdel(scmd, i);
+        }
+        else
+            check_command(cmd, envp);
     }
-    else
-        check_command(cmd);
     free(cmd);
     return (1);
 }
@@ -58,10 +59,12 @@ char            *printable_parce(char c, char *cmd, unsigned int *all)
     return (cmd);
 }
 
+/*
+**Here we react to a "<" and ">" signal.
+*/
+
 void            esc_leftright(char c, char *cmd, unsigned int *all)
 {
-    all[4] = (all[3] >= all[5]) ? all[3] / all[5] : 0;
-    
     (c == 91 && (all[1] & FLAG_ESC)) ? all[1] |= FLAG_OSQBRK : 0;
     if (c == 68 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] > PROMPT)
     {
@@ -75,6 +78,11 @@ void            esc_leftright(char c, char *cmd, unsigned int *all)
     }
 }
 
+/*
+**Here we print ' ' instead of the printable symbol
+**and delete a printable symble from the command-line.
+*/
+
 char            *delete_symbol(char *cmd, unsigned int *all)
 {
     all[3]--;
@@ -83,7 +91,27 @@ char            *delete_symbol(char *cmd, unsigned int *all)
     return (cmd);
 }
 
-int            readline(void)
+/*
+**We read one symbol input by the user, check the following:
+**"^D" signal -> function cmd_exit;
+**"^C" signal or the command starts with # or : -> function
+**nl_signals without processing the command, just new prompt printed;
+**"^J" or "^M" or "Enter" signal -> function nl_signals with
+**further command processing starting from check_command function;
+**">" and "<" signals but only within one-line-command;
+**"Delete" signal with deleting from the cmd-line;
+**Printing of printable symbols with writing to the cmd-line.
+**
+**FLAGS in all[1]:
+**FLAG_NL - next line without command-line analysis;
+**FLAG_SCMD - there are several commands
+**FLAG_ESC - there was '\033' detected;
+**FLAG_OSQBRK - there was an open square bracket '['.
+**
+**The main reactions are learned from bash-shell.
+*/
+
+int            readline(char **envp)
 {
     char                *cmd;
     unsigned int        all[8];
@@ -96,12 +124,13 @@ int            readline(void)
         read(STDIN_FILENO, &c, 1);
         (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
         if (c == 3 || c == 10 || c == 13 || c == '\n')
-            return (nl_signals(c, cmd, all));
+            return (nl_signals(c, cmd, all, envp));
         if (ft_isprint(c) && !(all[1] & FLAG_ESC))
             cmd = printable_parce(c, cmd, all);
         (c == '\033') ? all[1] |= FLAG_ESC : 0;
         (all[1] & FLAG_ESC) ? esc_leftright(c, cmd, all) : 0;
         ((c == 'D' || c == 'C') && (all[1] & FLAG_ESC)) ? all[1] ^= FLAG_ESC : 0;
+        all[4] = (all[2] >= all[5]) ? all[2] / all[5] : 0;
         (c == 127 && all[2] > 0 && all[3] > PROMPT) ? cmd = delete_symbol(cmd, all) : 0;
     }
     free(cmd);

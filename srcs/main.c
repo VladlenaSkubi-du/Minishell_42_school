@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 13:18:30 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 15:33:56 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,22 +48,22 @@ void                set_noncanonical_input(void)
     tcsetattr (STDIN_FILENO, TCSAFLUSH, &tty);
 }
 
-void                save_environment(int argc, char **argv, char **envp)
-{
-    int             i;
+// void                save_environment(int argc, char **argv, char **envp)
+// {
+//     int             i;
     
-    i = 0;
-    (void)argc;
-    (void)argv;
-    g_envn = (char**)ft_xmalloc(28 * sizeof(char*) + 1);
-    g_envn[29] = NULL;
-    while (envp[i])
-    {
-        g_envn[i] = (char*)ft_xmalloc(ft_strlen(envp[i]) + 1);
-        g_envn[i] = ft_strcpy(g_envn[i], envp[i]);
-        i++;
-    }
-}
+//     i = 0;
+//     (void)argc;
+//     (void)argv;
+//     g_envn = (char**)ft_xmalloc(28 * sizeof(char*) + 1);
+//     g_envn[29] = NULL;
+//     while (envp[i])
+//     {
+//         g_envn[i] = (char*)ft_xmalloc(ft_strlen(envp[i]) + 1);
+//         g_envn[i] = ft_strcpy(g_envn[i], envp[i]);
+//         i++;
+//     }
+// }
 
 /*
 **If we get 1 return from the fuction readline, that means
@@ -72,12 +72,12 @@ void                save_environment(int argc, char **argv, char **envp)
 
 int                 main(int argc, char **argv, char **envp)
 {
-    save_environment(argc, argv, envp);
+    //save_environment(argc, argv, envp);
     set_noncanonical_input();
     while (1)
     {
         display_prompt();
-        if (readline() == 1)
+        if (readline(envp) == 1)
             continue;
     }
     reset_canonical_input();

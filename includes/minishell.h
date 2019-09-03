@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 13:23:45 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 19:05:04 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,14 @@
 
 # define MAX            5
 # define PROMPT         3
-# define FLAG_NL        0x1 //next line
-# define FLAG_SCMD      0x2 //several commands
-# define FLAG_ESC       0x4 //there was '\033'
-# define FLAG_OSQBRK    0x8 //there was an open square bracket '['
+# define FLAG_NL        0x1
+# define FLAG_SCMD      0x2
+# define FLAG_ESC       0x4
+# define FLAG_OSQBRK    0x8
+# define ECHO_N         0x10
+# define ECHO_E         0x20
+# define ECHO_EE        0x40
+# define ECHO_OQUT      0x80
 
 char                    **g_envn;
 struct termios          g_backup_tty;
@@ -52,11 +56,12 @@ void                    save_environment(int argc, char **argv, char **envp);
 **The list of working functions - file readline.c
 */
 
-int                     readline(void);
+int                     readline(char **envp);
 char                    *delete_symbol(char *cmd, unsigned int *all);
 void                    esc_leftright(char c, char *cmd, unsigned int *all);
 char                    *printable_parce(char c, char *cmd, unsigned int *all);
-int                     nl_signals(char c, char *cmd, unsigned int *all);
+int                     nl_signals(char c, char *cmd, unsigned int *all,
+                            char **envp);
 
 /*
 **The list of working functions - file cmd_readline_changes.c
@@ -66,19 +71,27 @@ char                    *str_add_symbol(char *arr, char add, unsigned int *all);
 char                    *str_del_symbol(char *arr, unsigned int *all);
 char                    *help_str_change(char *cmd, char *swap,
                             int point, char add);
+void                    help_nl_signal(unsigned int *all);
 
 /*
 **The list of working functions - file commands_check.c
 */
 
-void                    check_command(char *cmd);
+void                    check_command(char *cmd, char **envp);
+void                    search_command(char *cmd, char **envp);
 
 /*
 **The list of builtins we have to implement: echo, cd, setenv, unsetenv, env,
-**exit
+**exit - file cmd_exit_echo_cd.c and cmd_env_set_unset.c
 */
 
 void                    cmd_exit(char *cmd);
+void                    cmd_echo(char *cmd, char **envp, int flag);
+void                    cmd_echo_output(char *cmd, int flag);
+void                    cmd_cd(char *cmd, char **envp, int flag);
+void                    cmd_env(char *cmd, char **envp, int flag);
+void                    cmd_setenv(char *cmd, char **envp, int flag);
+void                    cmd_unsetenv(char *cmd, char **envp, int flag);
 
 /*
 **Other functions used - the file other_functions.c

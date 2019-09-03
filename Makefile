@@ -6,9 +6,9 @@ SOURCES =	main.c \
 			readline.c \
 			cmd_readline_changes.c \
 			commands_check.c \
-			other_functions.c \
-			cmd_exit.c 
-			
+			cmd_exit_echo_cd.c \
+			cmd_env_set_unset.c \
+			other_functions.c 	
 
 DIR_O = objs
 

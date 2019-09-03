@@ -6,11 +6,35 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 13:23:39 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/03 15:09:26 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+/*
+**If the command consists of 2 or more lines and we try to send an nl-signal
+**from the center of the cmd-line, prompt does not separate it but finds the
+**end of the cmd-line
+*/
+
+void        help_nl_signal(unsigned int *all)
+{
+    if (all[4] && all[3] != all[2])
+    {
+        while (all[3] != all[2])
+        {
+            write(STDOUT_FILENO, "\033[C", 3);
+            all[3]++;
+        }
+        ft_putchar('\n');
+    }
+}
+
+/*
+**If we print a new symbol or delete, the whole line is moved - it should
+**be displayed in shell
+*/
 
 char        *help_str_change(char *cmd, char *swap, int point, char add)
 {
