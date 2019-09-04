@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 19:05:04 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/04 19:01:29 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,17 @@ struct termios          g_backup_tty;
 void                    set_noncanonical_input(void);
 void                    reset_canonical_input(void);
 void                    display_prompt(void);
-void                    save_environment(int argc, char **argv, char **envp);
+void                    save_environment(void);
 
 /*
 **The list of working functions - file readline.c
 */
 
-int                     readline(char **envp);
+int                     readline();
 char                    *delete_symbol(char *cmd, unsigned int *all);
 void                    esc_leftright(char c, char *cmd, unsigned int *all);
 char                    *printable_parce(char c, char *cmd, unsigned int *all);
-int                     nl_signals(char c, char *cmd, unsigned int *all,
-                            char **envp);
+int                     nl_signals(char c, char *cmd, unsigned int *all);
 
 /*
 **The list of working functions - file cmd_readline_changes.c
@@ -77,8 +76,8 @@ void                    help_nl_signal(unsigned int *all);
 **The list of working functions - file commands_check.c
 */
 
-void                    check_command(char *cmd, char **envp);
-void                    search_command(char *cmd, char **envp);
+void                    check_command(char *cmd);
+void                    search_command(char *cmd);
 
 /*
 **The list of builtins we have to implement: echo, cd, setenv, unsetenv, env,
@@ -86,12 +85,12 @@ void                    search_command(char *cmd, char **envp);
 */
 
 void                    cmd_exit(char *cmd);
-void                    cmd_echo(char *cmd, char **envp, int flag);
-void                    cmd_echo_output(char *cmd, int flag);
-void                    cmd_cd(char *cmd, char **envp, int flag);
-void                    cmd_env(char *cmd, char **envp, int flag);
-void                    cmd_setenv(char *cmd, char **envp, int flag);
-void                    cmd_unsetenv(char *cmd, char **envp, int flag);
+void                    cmd_echo(char *cmd, int len, int flag);
+void                    cmd_echo_output(char *cmd, int len, int flag, int shift);
+void                    cmd_cd(char *cmd, int flag);
+void                    cmd_env(char *cmd, int flag);
+void                    cmd_setenv(char *cmd, int flag);
+void                    cmd_unsetenv(char *cmd, int flag);
 
 /*
 **Other functions used - the file other_functions.c

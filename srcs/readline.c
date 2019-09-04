@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 17:01:18 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/04 18:18:50 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 **main-fucntion and print prompt.
 */
 
-int             nl_signals(char c, char *cmd, unsigned int *all, char **envp)
+int             nl_signals(char c, char *cmd, unsigned int *all)
 {
     char        **scmd;
     int         i;
@@ -31,11 +31,11 @@ int             nl_signals(char c, char *cmd, unsigned int *all, char **envp)
         {
             scmd = ft_strsplit(cmd, ';');
             while (scmd[i])
-                check_command(scmd[i++], envp);
+                check_command(scmd[i++]);
             ft_mapdel(scmd, i);
         }
         else
-            check_command(cmd, envp);
+            check_command(cmd);
     }
     free(cmd);
     return (1);
@@ -111,7 +111,7 @@ char            *delete_symbol(char *cmd, unsigned int *all)
 **The main reactions are learned from bash-shell.
 */
 
-int            readline(char **envp)
+int            readline(void)
 {
     char                *cmd;
     unsigned int        all[8];
@@ -124,7 +124,7 @@ int            readline(char **envp)
         read(STDIN_FILENO, &c, 1);
         (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
         if (c == 3 || c == 10 || c == 13 || c == '\n')
-            return (nl_signals(c, cmd, all, envp));
+            return (nl_signals(c, cmd, all));
         if (ft_isprint(c) && !(all[1] & FLAG_ESC))
             cmd = printable_parce(c, cmd, all);
         (c == '\033') ? all[1] |= FLAG_ESC : 0;

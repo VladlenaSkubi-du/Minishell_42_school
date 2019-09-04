@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 15:33:56 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/04 19:01:55 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,38 +48,45 @@ void                set_noncanonical_input(void)
     tcsetattr (STDIN_FILENO, TCSAFLUSH, &tty);
 }
 
-// void                save_environment(int argc, char **argv, char **envp)
-// {
-//     int             i;
+void                save_environment(void)
+{
+    int             i;
+    extern char     **environ;
+    char            **tmp;
     
-//     i = 0;
-//     (void)argc;
-//     (void)argv;
-//     g_envn = (char**)ft_xmalloc(28 * sizeof(char*) + 1);
-//     g_envn[29] = NULL;
-//     while (envp[i])
-//     {
-//         g_envn[i] = (char*)ft_xmalloc(ft_strlen(envp[i]) + 1);
-//         g_envn[i] = ft_strcpy(g_envn[i], envp[i]);
-//         i++;
-//     }
-// }
+    i = 0;
+    tmp = (char**)ft_xmalloc(28 * sizeof(char*) + 1);
+    while (environ[i])
+    {
+        tmp[i] = ft_strdup(environ[i]);
+        i++;
+    }
+    tmp[i] = NULL;
+    environ = tmp;
+    
+    // i = 0;
+    // while (i < 28)
+    //     ft_putendl(g_envn[i++]);
+}
 
 /*
 **If we get 1 return from the fuction readline, that means
 **user put '\n' and wants to input another command.
 */
 
-int                 main(int argc, char **argv, char **envp)
+int                 main(void)
 {
-    //save_environment(argc, argv, envp);
+    extern char     **environ;
+    
+    save_environment();
     set_noncanonical_input();
     while (1)
     {
         display_prompt();
-        if (readline(envp) == 1)
+        if (readline() == 1)
             continue;
     }
     reset_canonical_input();
+    //написать фри для мапы
     return (0);
 }
