@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/04 19:01:55 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/10 19:47:32 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void                reset_canonical_input(void)
 
 void                display_prompt(void)
 {
-    ft_putstr("$> ");
+    ft_putstr("$\033[1;31mminishell\033[0m> ");
 }
 
 /*

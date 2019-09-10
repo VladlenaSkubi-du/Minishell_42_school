@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/04 19:01:29 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/10 20:20:15 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 # define ECHO_E         0x20
 # define ECHO_EE        0x40
 # define ECHO_OQUT      0x80
+# define ECHO_SLASH     0x100
 
 char                    **g_envn;
 struct termios          g_backup_tty;
@@ -86,7 +87,7 @@ void                    search_command(char *cmd);
 
 void                    cmd_exit(char *cmd);
 void                    cmd_echo(char *cmd, int len, int flag);
-void                    cmd_echo_output(char *cmd, int len, int flag, int shift);
+void                    cmd_echo_output(char *cmd, int len, int *flag, int shift);
 void                    cmd_cd(char *cmd, int flag);
 void                    cmd_env(char *cmd, int flag);
 void                    cmd_setenv(char *cmd, int flag);

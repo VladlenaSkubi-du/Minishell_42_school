@@ -408,3 +408,66 @@ if (cmd[i] == '"')
         }
         else
             write(STDOUT_FILENO, &cmd[i++], 1);
+
+LAST ECHO
+if (cmd[i] == '\\' && (flag & ECHO_E))
+            {
+                if (cmd[i + 1] == '\\' || (cmd[i + 1] >= 'a' && cmd[i + 1] <= 'c')
+                || cmd[i + 1] == 'e' || cmd[i + 1] == 'f' || cmd[i + 1] == 'n'
+                || cmd[i + 1] == 'r' || cmd[i + 1] == 't' || cmd[i + 1] == 'v'
+                || cmd[i + 1] == 'E')
+                {
+                    c[0] = '\\';
+                    c[1] = cmd[i];
+                    write(STDOUT_FILENO, &c, 1);
+                    i++;
+                }
+                else if (ft_strncmp(cmd + i + 1, "033", 3) == 0)
+                {
+                    write(STDOUT_FILENO, "\033", 1);
+                    i += 3;
+                }
+                else
+                {
+                    write(STDOUT_FILENO, &cmd[i], 1);
+                    write(STDOUT_FILENO, &cmd[i + 1], 1);
+                    i++;
+                }
+            }
+            else if (cmd[i] == '\\' && (flag & ECHO_EE))
+                write(STDOUT_FILENO, &cmd[i], 1);
+
+LAST LAST
+(cmd[++i] == 'b') ? write(STDOUT_FILENO, "\b", 1) : i--;
+            (cmd[++i] == 'f') ? write(STDOUT_FILENO, "\f", 1) : i--;
+            (cmd[++i] == 'n') ? write(STDOUT_FILENO, "\n", 1) : i--;
+            (cmd[++i] == 'r') ? write(STDOUT_FILENO, "\r", 1) : i--;
+            (cmd[++i] == 't') ? write(STDOUT_FILENO, "\t", 1) : i--;
+            (cmd[++i] == 'v') ? write(STDOUT_FILENO, "\v", 1) : i--;
+            if (ft_strncmp(cmd + i + 1, "033", 3) == 0 || ft_strncmp(cmd + i + 1, "x1b", 3) == 0)
+            {
+                write(STDOUT_FILENO, "\033", 1);
+                i += 3;
+            }
+        }
+        i += (cmd[i] == '\\' && !(flag & ECHO_OQUT)) ? 1 : 0;
+        write(STDOUT_FILENO, &cmd[i], 1);
+        i++;
+
+
+ if (cmd[++i] == 'a')
+                write(STDOUT_FILENO, "\a", 1);
+            (cmd[++i] == 'b') ? write(STDOUT_FILENO, "\b", 1) : i--;
+            (cmd[++i] == 'f') ? write(STDOUT_FILENO, "\f", 1) : i--;
+            (cmd[++i] == 'n') ? write(STDOUT_FILENO, "\n", 1) : i--;
+            (cmd[++i] == 'r') ? write(STDOUT_FILENO, "\r", 1) : i--;
+            (cmd[++i] == 't') ? write(STDOUT_FILENO, "\t", 1) : i--;
+            (cmd[++i] == 'v') ? write(STDOUT_FILENO, "\v", 1) : i--;
+            (cmd[++i] == '"') ? write(STDOUT_FILENO, "\"", 1) : i--;
+            if (cmd[++i] == 'e' || ft_strncmp(cmd + i + 1, "033", 3) == 0
+                || ft_strncmp(cmd + i + 1, "x1b", 3) == 0)
+            {
+                write(STDOUT_FILENO, "\033", 1);
+                i += 2;
+            }
+            i++;
