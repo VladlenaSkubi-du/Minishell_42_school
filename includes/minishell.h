@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/12 17:19:49 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/12 19:10:28 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@
 # define ECHO_EE		0x40
 # define ECHO_OQUT		0x80
 
-char					**g_envn;
 struct termios			g_backup_tty;
 
 /*
@@ -97,7 +96,7 @@ void					cmd_unsetenv(char *cmd, int flag);
 **The list of helpers for the minishell-processing: file special_signs.c
 */
 
-int 					special_signs(char *cmd, int len);
+int 					special_signs(char *cmd);
 
 /*
 **Other functions used - the file other_functions.c
@@ -107,5 +106,6 @@ void					*ft_xmalloc(size_t size);
 void					*ft_realloc(void *subj, int len_subj, int len_needed);
 void					get_terminal_width(unsigned int *term);
 void					init_all(unsigned int *all);
+int						count_env(void);
 
 #endif

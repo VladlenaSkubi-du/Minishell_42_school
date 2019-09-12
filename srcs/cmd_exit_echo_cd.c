@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/12 17:20:54 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/12 19:20:33 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void		cmd_exit(char *cmd)
 **- not a POSIX standard
 **ECHO_EE - '-E' flag - disable interpretation of backslash escapes
 **(default); - not a POSIX standard
-**also --help - --help display this help and exit;
+**also --help - --help display this help and exit; TO DO!!!!
 */
 
 void		cmd_echo(char *cmd, int len, int flag)
@@ -54,15 +54,15 @@ void		cmd_echo(char *cmd, int len, int flag)
 			break ;
 	}
 	(!(flag & ECHO_E)) ? flag |= ECHO_EE : 0;
-	(cmd_echo_output(cmd, len, &flag, i) == 1) ?
+	(cmd_echo_output(cmd, len, &flag, i) == -1) ?
 		ft_putstr("New readline called: minishell is too baby for that") : 0;
 	(flag & ECHO_N) ? 0 : ft_putchar('\n');
 }
 
 int			cmd_echo_output(char *cmd, int len, int *flag, int i)
 {
-	if (special_signs(cmd + i, len) == 1)
-		return (1);
+	if (special_signs(cmd + i) == -1)
+		return (-1);
 	while (i < len)
 	{
 		(cmd[i] == '"') ? (*flag = (*flag & ECHO_OQUT) ?
@@ -82,8 +82,8 @@ int			cmd_echo_output(char *cmd, int len, int *flag, int i)
 			|| cmd[i + 1] == '\"'))
 			write(STDOUT_FILENO, &cmd[++i], 1);
 		(ft_isprint(cmd[i]) && (cmd[i] != '"' && cmd[i] != '\\')) ?
-			write(STDOUT_FILENO, &cmd[i], 1) : 0;
-		i++;
+			write(STDOUT_FILENO, &cmd[i++], 1) : i++;
+		//i++;
 	}
 	return (0);
 }
