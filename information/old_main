@@ -471,3 +471,153 @@ LAST LAST
                 i += 2;
             }
             i++;
+            \
+
+
+void        cmd_echo_output(char *cmd, int len, int flag, int i)
+{
+    //ft_putendl(cmd + i);
+    while (i < len)
+    {
+        if (cmd[i++] == '"')
+            flag = (flag & ECHO_OQUT) ? flag ^ ECHO_OQUT : flag | ECHO_OQUT;
+        if (flag & ECHO_OQUT && (flag & ECHO_E) && cmd[i] == '\\')
+        {
+            i++;
+            // if (cmd[i] == 'a')
+            // {
+            //     write(STDOUT_FILENO, "\a", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 'b')
+            // {
+            //     write(STDOUT_FILENO, "\b", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 'f')
+            // {
+            //     write(STDOUT_FILENO, "\f", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 'n')
+            // {
+            //     write(STDOUT_FILENO, "\n", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 'r')
+            // {
+            //     write(STDOUT_FILENO, "\r", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 't')
+            // {
+            //     write(STDOUT_FILENO, "\t", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == 'v')
+            // {
+            //     write(STDOUT_FILENO, "\v", 1);
+            //     i++;
+            // }
+            // else if (cmd[i] == '"')
+            // {
+            //     write(STDOUT_FILENO, "\"", 1);
+            //     i++;
+            // }
+            if (ft_strncmp(cmd + i, "033", 3) == 0
+                || ft_strncmp(cmd + i, "x1b", 3) == 0)
+            {
+                write(STDOUT_FILENO, "\033", 1);
+                i += 3;
+            }
+        }
+        i += (cmd[i] == '\\' && !(flag & ECHO_OQUT)) ? 1 : 0;
+        (cmd[i] == '"') ? 0 : write(STDOUT_FILENO, &cmd[i++], 1);
+        //i++;
+    }
+    if (flag & ECHO_OQUT)
+        write(STDOUT_FILENO, "Close the brackets", 19);
+    // (ptr = ft_strchr(cmd, '"')) ? flag |= ECHO_OQUT : 0;
+    // if (ft_strrchr(ptr + 1, '"') && (flag & ECHO_EE))
+    //     write(STDOUT_FILENO, ptr + 1, ft_strlen(ptr + 1) - 1);
+}
+
+LAST ECHO OUTPUT - 12.09
+
+void        cmd_echo_output(char *cmd, int len, int *flag, int i)
+{
+    //ft_putendl(cmd + i);
+    while (i < len)
+    {
+        if (cmd[i] == '"')
+        {
+            *flag = (*flag & ECHO_OQUT) ? *flag ^ ECHO_OQUT : *flag | ECHO_OQUT;
+            i++;
+        }
+        if ((*flag & ECHO_OQUT) && (*flag & ECHO_E) && cmd[i] == '\\')
+        {
+            i++;
+            if (cmd[i] == 'a')
+            {
+                write(STDOUT_FILENO, "\a", 1);
+                i++;
+            }
+            else if (cmd[i] == 'b')
+            {
+                write(STDOUT_FILENO, "\b", 1);
+                i++;
+            }
+            else if (cmd[i] == 'c')
+            {
+                *flag |= ECHO_N;
+                break ;
+            }
+            else if (cmd[i] == 'f')
+            {
+                write(STDOUT_FILENO, "\f", 1);
+                i++;
+            }
+            else if (cmd[i] == 'n')
+            {
+                write(STDOUT_FILENO, "\n", 1);
+                i++;
+            }
+            else if (cmd[i] == 'r')
+            {
+                write(STDOUT_FILENO, "\r", 1);
+                i++;
+            }
+            else if (cmd[i] == 't')
+            {
+                write(STDOUT_FILENO, "\t", 1);
+                i++;
+            }
+            else if (cmd[i] == 'v')
+            {
+                write(STDOUT_FILENO, "\v", 1);
+                i++;
+            }
+            else if (cmd[i] == '"' && i + 1 < len)
+            {
+                write(STDOUT_FILENO, "\"", 1);
+                i++;
+            }
+            if (ft_strncmp(cmd + i, "033", 3) == 0
+                || ft_strncmp(cmd + i, "x1b", 3) == 0)
+            {
+                write(STDOUT_FILENO, "\033", 1);
+                i += 3;
+            }
+        }
+        i += (cmd[i] == '\\' && !(*flag & ECHO_OQUT)) ? 1 : 0;
+        if (cmd[i] != '"' && cmd[i] != '\\')
+        {
+            write(STDOUT_FILENO, &cmd[i], 1);
+            i++;
+        }
+    }
+    if ((*flag & ECHO_OQUT) && i >= len)
+        write(STDOUT_FILENO, ">Close the brackets", 20);
+}
+
+write (STDOUT_FILENO, "New readline called: minishell is too baby for that", 51);

@@ -8,6 +8,7 @@ SOURCES =	main.c \
 			commands_check.c \
 			cmd_exit_echo_cd.c \
 			cmd_env_set_unset.c \
+			special_signs.c \
 			other_functions.c 	
 
 DIR_O = objs
