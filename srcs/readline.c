@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/04 18:18:50 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/13 20:24:05 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int             nl_signals(char c, char *cmd, unsigned int *all)
 {
     char        **scmd;
     int         i;
-    
+
     i = 0;
     help_nl_signal(all);
     ft_putchar('\n');
@@ -30,14 +30,14 @@ int             nl_signals(char c, char *cmd, unsigned int *all)
         if (all[1] & FLAG_SCMD)
         {
             scmd = ft_strsplit(cmd, ';');
-            while (scmd[i])
-                check_command(scmd[i++]);
+            // while (scmd[i])
+            //     check_command(scmd[i++], );
             ft_mapdel(scmd, i);
         }
         else
-            check_command(cmd);
+            check_command(cmd, all[0]);
     }
-    free(cmd);
+    //free(cmd);
     return (1);
 }
 
@@ -68,7 +68,7 @@ void            esc_leftright(char c, char *cmd, unsigned int *all)
     (c == 91 && (all[1] & FLAG_ESC)) ? all[1] |= FLAG_OSQBRK : 0;
     if (c == 68 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] > PROMPT)
     {
-        all[3]--;           
+        all[3]--;
         write(STDOUT_FILENO, "\033[D", 3);
     }
     else if (c == 67 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] < all[5] - 1)

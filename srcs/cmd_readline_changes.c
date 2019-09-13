@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/03 15:09:26 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/13 19:04:04 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ char        *help_str_change(char *cmd, char *swap, int point, char add)
 ** 2) | | >| | | | | |M '\0 | | | | | | - we used ">" and want to start printing
 **          ^ fact = PROMPT  ^ point
 ** from the center of the terminal line
-** 3) | | >| a| b| c| d| |M '\0'| | | | | | - we have text, used "<" and want 
+** 3) | | >| a| b| c| d| |M '\0'| | | | | | - we have text, used "<" and want
 **           ^ point    ^ fact (4 symbles in command line)
 ** to start printing from the center or beginning of the command line
 */
@@ -91,7 +91,7 @@ char        *str_add_symbol(char *cmd, char add, unsigned int *all)
     int     fact;
     int     point;
     char    *swap;
-    
+
     fact = all[2] - PROMPT;
     point = all[3] - PROMPT;
     if (fact >= all[0] - 1)
@@ -123,13 +123,13 @@ char        *str_add_symbol(char *cmd, char add, unsigned int *all)
 ** the command line string;
 ** point is (all[3] - PROMPT) - the counter after the "< >" usage from keybord
 **
-** 1) | | >| a| b| c| d| |M '\0' | - we have text and start to delete from 
+** 1) | | >| a| b| c| d| |M '\0' | - we have text and start to delete from
 **                      ^ fact = point = PROMPT
 ** the end of the line
 ** 2) | | >| a| b| c| d| |M '\0 | | | | | | - we have text, used "<" and want
 **                      ^ fact       ^ point
 ** to start deleting from the center of the terminal line
-** 3) | | >| a| b| c| d| |M '\0'| | | | | | - we have text, used "<" and want 
+** 3) | | >| a| b| c| d| |M '\0'| | | | | | - we have text, used "<" and want
 **              ^ point ^ fact
 ** to start deleting from the center of the command line
 */

@@ -19,8 +19,8 @@ static void check_command(char *s)
         ft_putendl("OTHER");
 }
 
-void    handle_sig(int sig) 
-{ 
+void    handle_sig(int sig)
+{
     if (sig == 1)
         printf("Hangup the process %d\n", sig);
     else if (sig == 2)
@@ -50,18 +50,18 @@ int         main(void)
     char buf[MAXLINE]; /* из apue.h */
     pid_t pid;
     int status;
- 
+
     printf("%% "); /* вывести приглашение (printf требует использовать */
     /* последовательность %%, чтобы вывести символ %) */
-    while (fgets(buf, MAXLINE, stdin) != NULL) 
+    while (fgets(buf, MAXLINE, stdin) != NULL)
     {
         if (buf[strlen(buf) - 1] == '\n')
             buf[strlen(buf) - 1] = 0; /* заменить символ перевода строки */
-        if ((pid = fork()) < 0) 
+        if ((pid = fork()) < 0)
         {
             ft_putendl("fork error");
         }
-        else if (pid == 0) 
+        else if (pid == 0)
         { /* дочерний процесс */
             execlp(buf, buf, (char *)0);
             printf("can't make: %s\n", buf);
@@ -97,7 +97,7 @@ int         main(void)
 while (*envp++)
     {
         printf("%s\n", *envp);
-    } 
+    }
 
 Version 25.08 10:48
 
@@ -199,7 +199,7 @@ int            readline(void)
         }
         // if (ft_isprint(c) && !(sig & FLAG_ESC))
         //     term[2]++;
-        
+
         //reaction for signals
         if (c == 3 || c == 10 || c == 13)
         {
@@ -207,7 +207,7 @@ int            readline(void)
             return (1);
         }
         (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
-        
+
         //switches
         (c == '\033') ? sig |= FLAG_ESC : 0;
         (c == 91 && (sig & FLAG_ESC)) ? sig |= FLAG_OSQBRK : 0;
@@ -252,7 +252,7 @@ int            readline(void)
             //     term[2]--;
             // }
         }
-            
+
         // if (ft_isprint(c) && !(sig & FLAG_ESC))
         // {
         //     i++;
@@ -273,7 +273,7 @@ int            readline(void)
     // {
     //     ft_putchar('\n');
     //     return (1);
-    // } 
+    // }
     return (0);
 }
 
@@ -304,7 +304,7 @@ THE LAST Version
             }
             cmd[i] = c;
         }
-        
+
         //reaction for signals
         if (c == 3 || c == 10 || c == 13)
         {
@@ -312,7 +312,7 @@ THE LAST Version
             return (1);
         }
         (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
-        
+
         //switches
         (c == '\033') ? sig |= FLAG_ESC : 0;
         (c == 91 && (sig & FLAG_ESC)) ? sig |= FLAG_OSQBRK : 0;
@@ -344,7 +344,7 @@ THE LAST Version
 STR_ADD_SYMBOL
 char            *new;
     int             i;
-    
+
     i = all[3] - PROMPT;
     all[7] = ft_strlen(cmd) + 1 + 1;
     new = (all[7] > all[0]) ? (char*)ft_xmalloc((all[0] = all[0] *
@@ -621,3 +621,28 @@ void        cmd_echo_output(char *cmd, int len, int *flag, int i)
 }
 
 write (STDOUT_FILENO, "New readline called: minishell is too baby for that", 51);
+
+// if (cmd[i] == '\\')
+		// {
+		// 	if ((*flag & ECHO_OQUT) && (*flag & ECHO_E))
+		// 	{
+		// 		if (cmd[i + 1] == 'c')
+		// 		{
+		// 			*flag |= ECHO_N;
+		// 			break ;
+		// 		}
+		// 		else
+		// 		{
+		// 			i = cmd_echo_escape(cmd, ++i);
+		// 			continue ;
+		// 		}
+		// 	}
+		// 	(cmd[i + 1] == '\\' || cmd[i + 1] == '\"') ?
+		// 		write(STDOUT_FILENO, &cmd[++i], 1) : 0;
+		// }
+
+
+SPECIAL_SIGNS_PROCESSING
+	printf("%.*s - %d - %s\n", tmp, environ[j], ft_strncmp(environ[j], cmd + i + 1, tmp - 1), cmd + i + 1);
+
+!#$%'"\*

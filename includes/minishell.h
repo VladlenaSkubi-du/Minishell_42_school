@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/12 19:10:28 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/13 21:01:35 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void					help_nl_signal(unsigned int *all);
 **The list of working functions - file commands_check.c
 */
 
-void					check_command(char *cmd);
+void					check_command(char *cmd, int len);
 void					search_command(char *cmd);
 
 /*
@@ -85,7 +85,8 @@ void					search_command(char *cmd);
 
 void					cmd_exit(char *cmd);
 void					cmd_echo(char *cmd, int len, int flag);
-int						cmd_echo_output(char *cmd, int len, int *flag, int i);
+int						cmd_echo_flags(char *cmd, int len, int *flag, int i);
+void					cmd_echo_output(char *cmd, int len, int flag, int i);
 int						cmd_echo_escape(char *cmd, int i);
 void					cmd_cd(char *cmd, int flag);
 void					cmd_env(char *cmd, int flag);
@@ -93,13 +94,15 @@ void					cmd_setenv(char *cmd, int flag);
 void					cmd_unsetenv(char *cmd, int flag);
 
 /*
-**The list of helpers for the minishell-processing: file special_signs.c
+**The list of helpers for the build-in-commands that are to be implemented
+**processing: file special_signs.c
 */
 
-int 					special_signs(char *cmd);
+int 					special_signs_check(char *cmd, int len);
+char					*special_signs_processing(char *cmd, int *len, int i);
 
 /*
-**Other functions used - the file other_functions.c
+**Other functions used - the file other_functions_1.c
 */
 
 void					*ft_xmalloc(size_t size);
@@ -107,5 +110,11 @@ void					*ft_realloc(void *subj, int len_subj, int len_needed);
 void					get_terminal_width(unsigned int *term);
 void					init_all(unsigned int *all);
 int						count_env(void);
+
+/*
+**Other functions used - the file other_functions_2.c
+*/
+
+void					ft_bzero_int(int *arr, int len);
 
 #endif
