@@ -6,7 +6,8 @@ SOURCES =	main.c \
 			readline.c \
 			cmd_readline_changes.c \
 			commands_check.c \
-			cmd_exit_echo_cd.c \
+			cmd_echo.c \
+			cmd_exit_cd.c \
 			cmd_env_set_unset.c \
 			special_signs.c \
 			other_functions_1.c \

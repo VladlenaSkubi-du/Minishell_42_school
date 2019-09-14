@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_exit_echo_cd.c                                 :+:      :+:    :+:   */
+/*   cmd_echo.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/04 17:29:35 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/13 21:03:01 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/14 17:43:30 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void		cmd_exit(char *cmd)
-{
-	ft_putendl("exit");
-	reset_canonical_input();
-	free(cmd);
-	exit(1);
-}
 
 /*
 **Flags here:
@@ -27,17 +19,24 @@ void		cmd_exit(char *cmd)
 **- not a POSIX standard
 **ECHO_EE - '-E' flag - disable interpretation of backslash escapes
 **(default); - not a POSIX standard
+**Working flags used:
+**E_OQUT - there was a '\'' or '\"' open (-e flag starts working only with
+**the string in quatations (linux));
+**E_OTYS - there was a single quatation open (open-type-single), double
+**quatations are taken for symbles;
+**E_OTYD - there was a double quatation open (open-type-double), single
+**quatations are taken for symbles;
 */
 
 void			cmd_echo(char *cmd, int len, int flag)
 {
 	int			i;
-	int			tmp;
 
 	flag = 0;
 	i = cmd_echo_flags(cmd, len, &flag, 5);
 	(!(flag & ECHO_E)) ? flag |= ECHO_EE : 0;
-	cmd_echo_output(cmd, len, flag, i);
+	cmd_echo_output(cmd, len, &flag, i);
+	(flag & ECHO_N) ? 0 : ft_putchar('\n');
 }
 
 int				cmd_echo_flags(char *cmd, int len, int *flag, int i)
@@ -50,7 +49,7 @@ int				cmd_echo_flags(char *cmd, int len, int *flag, int i)
 				return (i);
 			while (cmd[++i] != ' ' && cmd[i] != '\0')
 			{
-				(cmd[i] == 'n')	? *flag |= ECHO_N : 0;
+				(cmd[i] == 'n') ? *flag |= ECHO_N : 0;
 				(cmd[i] == 'e') ? *flag |= ECHO_E : 0;
 				(cmd[i] == 'E' && !(*flag & ECHO_E)) ? *flag |= ECHO_EE : 0;
 			}
@@ -62,31 +61,61 @@ int				cmd_echo_flags(char *cmd, int len, int *flag, int i)
 	return (i);
 }
 
-void			cmd_echo_output(char *cmd, int len, int flag, int i)
+void			cmd_echo_output(char *cmd, int len, int *flag, int i)
 {
 	while (i < len)
 	{
-		(cmd[i] == '"') ? (flag = (flag & ECHO_OQUT) ?
-			flag ^ ECHO_OQUT : flag | ECHO_OQUT) : 0;
-		if (cmd[i] == '\\' && (flag & ECHO_OQUT) &&
-			(flag & ECHO_E) && cmd[i + 1] == 'c')
+		if (cmd_echo_quatations(cmd[i], flag) == 1)
 		{
-			flag |= ECHO_N;
-			break ;
-		}
-		else if (cmd[i] == '\\' && (flag & ECHO_OQUT))
-		{
-			(flag & ECHO_E) ? i = cmd_echo_escape(cmd, ++i) : 0;
-			(flag & ECHO_EE) ? write(STDOUT_FILENO, &cmd[i++], 1) : 0;
+			write(STDOUT_FILENO, &cmd[i++], 1);
 			continue ;
 		}
-		else if (cmd[i] == '\\' && (cmd[i + 1] == '\\'
-			|| cmd[i + 1] == '\"'))
+		if (cmd[i] == '\\' && (*flag & E_OQUT) &&
+			(*flag & ECHO_E) && cmd[i + 1] == 'c')
+		{
+			*flag |= ECHO_N;
+			break ;
+		}
+		else if (cmd[i] == '\\' && (*flag & E_OQUT))
+		{
+			(*flag & ECHO_E) ? i = cmd_echo_escape(cmd, ++i) : 0;
+			(*flag & ECHO_EE) ? write(STDOUT_FILENO, &cmd[i++], 1) : 0;
+			continue ;
+		}
+		else if (cmd[i] == '\\' && (cmd[i + 1] == '\\' || cmd[i + 1] == '\"'))
 			write(STDOUT_FILENO, &cmd[++i], 1);
-		(ft_isprint(cmd[i]) && (cmd[i] != '"' && cmd[i] != '\\')) ?
+		(ft_isprint(cmd[i]) && (cmd[i] != '\\') &&
+			(cmd[i] != '"') && (cmd[i] != '\'')) ?
 			write(STDOUT_FILENO, &cmd[i++], 1) : i++;
 	}
-	(flag & ECHO_N) ? 0 : ft_putchar('\n');
+}
+
+int				cmd_echo_quatations(char c, int *flag)
+{
+	if (c == '"' && !(*flag & E_OQUT) && !(*flag & E_OTYS) && !(*flag & E_OTYD))
+	{
+		*flag |= E_OTYD;
+		*flag |= E_OQUT;
+	}
+	else if (c == '"' && (*flag & E_OQUT) && (*flag & E_OTYD))
+	{
+		*flag ^= E_OTYD;
+		*flag ^= E_OQUT;
+	}
+	else if (c == '\'' && !(*flag & E_OQUT) && !(*flag & E_OTYS)
+		&& !(*flag & E_OTYD))
+	{
+		*flag |= E_OTYS;
+		*flag |= E_OQUT;
+	}
+	else if (c == '\'' && (*flag & E_OQUT) && (*flag & E_OTYS))
+	{
+		*flag ^= E_OTYS;
+		*flag ^= E_OQUT;
+	}
+	else if ((c == '\'' && (*flag & E_OTYD)) || (c == '"' && (*flag & E_OTYS)))
+		return (1);
+	return (0);
 }
 
 int				cmd_echo_escape(char *cmd, int i)
@@ -114,9 +143,4 @@ int				cmd_echo_escape(char *cmd, int i)
 	else if (cmd[i] == 'e')
 		write(STDOUT_FILENO, "\033", 1);
 	return (++i);
-}
-
-void		cmd_cd(char *cmd, int flag)
-{
-	ft_putendl(cmd);
 }

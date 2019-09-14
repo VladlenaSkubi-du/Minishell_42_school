@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/13 19:04:04 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/14 17:43:02 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,17 @@
 **end of the cmd-line
 */
 
-void        help_nl_signal(unsigned int *all)
+void		help_nl_signal(unsigned int *all)
 {
-    if (all[4] && all[3] != all[2])
-    {
-        while (all[3] != all[2])
-        {
-            write(STDOUT_FILENO, "\033[C", 3);
-            all[3]++;
-        }
-        ft_putchar('\n');
-    }
+	if (all[4] && all[3] != all[2])
+	{
+		while (all[3] != all[2])
+		{
+			write(STDOUT_FILENO, "\033[C", 3);
+			all[3]++;
+		}
+		ft_putchar('\n');
+	}
 }
 
 /*
@@ -36,33 +36,33 @@ void        help_nl_signal(unsigned int *all)
 **be displayed in shell
 */
 
-char        *help_str_change(char *cmd, char *swap, int point, char add)
+char		*help_str_change(char *cmd, char *swap, int point, char add)
 {
-    int     i;
-    int     len;
+	int		i;
+	int		len;
 
-    i = -1;
-    len = ft_strlen(swap);
-    if (add > 0)
-    {
-        while (swap[++i])
-            cmd[point + 1 + i] = swap[i];
-        write(STDOUT_FILENO, &add, 1);
-        write(STDOUT_FILENO, swap, len);
-        while (len--)
-            write(STDOUT_FILENO, "\033[D", 3);
-    }
-    else
-    {
-        while (swap[++i])
-            cmd[point + i] = swap[i];
-        cmd[point + i] = '\0';
-        write(STDOUT_FILENO, swap, len);
-        write(STDOUT_FILENO, " ", 1);
-        while (len-- >= 0)
-            write(STDOUT_FILENO, "\033[D", 3);
-    }
-    return (cmd);
+	i = -1;
+	len = ft_strlen(swap);
+	if (add > 0)
+	{
+		while (swap[++i])
+			cmd[point + 1 + i] = swap[i];
+		write(STDOUT_FILENO, &add, 1);
+		write(STDOUT_FILENO, swap, len);
+		while (len--)
+			write(STDOUT_FILENO, "\033[D", 3);
+	}
+	else
+	{
+		while (swap[++i])
+			cmd[point + i] = swap[i];
+		cmd[point + i] = '\0';
+		write(STDOUT_FILENO, swap, len);
+		write(STDOUT_FILENO, " ", 1);
+		while (len-- >= 0)
+			write(STDOUT_FILENO, "\033[D", 3);
+	}
+	return (cmd);
 }
 
 /*
@@ -86,31 +86,31 @@ char        *help_str_change(char *cmd, char *swap, int point, char add)
 ** to start printing from the center or beginning of the command line
 */
 
-char        *str_add_symbol(char *cmd, char add, unsigned int *all)
+char		*str_add_symbol(char *cmd, char add, unsigned int *all)
 {
-    int     fact;
-    int     point;
-    char    *swap;
+	int		fact;
+	int		point;
+	char	*swap;
 
-    fact = all[2] - PROMPT;
-    point = all[3] - PROMPT;
-    if (fact >= all[0] - 1)
-    {
-        cmd = ft_realloc(cmd, all[0], all[0] * 2);
-        all[0] *= 2;
-    }
-    if (fact > point)
-    {
-        swap = ft_strdup(cmd + point);
-        cmd[point] = add;
-        cmd = help_str_change(cmd, swap, point, add);
-        all[3]++;
-        free(swap);
-    }
-    (fact == point) ? all[3]++ : 0;
-    (fact <= point) ? cmd[fact] = add : 0;
-    all[2]++;
-    return (cmd);
+	fact = all[2] - PROMPT;
+	point = all[3] - PROMPT;
+	if (fact >= all[0] - 1)
+	{
+		cmd = ft_realloc(cmd, all[0], all[0] * 2);
+		all[0] *= 2;
+	}
+	if (fact > point)
+	{
+		swap = ft_strdup(cmd + point);
+		cmd[point] = add;
+		cmd = help_str_change(cmd, swap, point, add);
+		all[3]++;
+		free(swap);
+	}
+	(fact == point) ? all[3]++ : 0;
+	(fact <= point) ? cmd[fact] = add : 0;
+	all[2]++;
+	return (cmd);
 }
 
 /*
@@ -134,28 +134,28 @@ char        *str_add_symbol(char *cmd, char add, unsigned int *all)
 ** to start deleting from the center of the command line
 */
 
-char        *str_del_symbol(char *cmd, unsigned int *all)
+char		*str_del_symbol(char *cmd, unsigned int *all)
 {
-    int     fact;
-    int     point;
-    char    *swap;
+	int		fact;
+	int		point;
+	char	*swap;
 
-    fact = all[2] - PROMPT;
-    point = all[3] - PROMPT;
-    if (fact == 0)
-        return (cmd);
-    if (fact <= all[0] / 2)
-    {
-        cmd = ft_realloc(cmd, all[0], all[0] / 2);
-        all[0] /= 2;
-    }
-    (fact - 1 == point) ? cmd[--fact] = '\0' : 0;
-    if (fact - 1 > point)
-    {
-        swap = ft_strdup(cmd + point + 1);
-        cmd = help_str_change(cmd, swap, point, -1);
-        free(swap);
-    }
-    all[2]--;
-    return (cmd);
+	fact = all[2] - PROMPT;
+	point = all[3] - PROMPT;
+	if (fact == 0)
+		return (cmd);
+	if (fact <= all[0] / 2)
+	{
+		cmd = ft_realloc(cmd, all[0], all[0] / 2);
+		all[0] /= 2;
+	}
+	(fact - 1 == point) ? cmd[--fact] = '\0' : 0;
+	if (fact - 1 > point)
+	{
+		swap = ft_strdup(cmd + point + 1);
+		cmd = help_str_change(cmd, swap, point, -1);
+		free(swap);
+	}
+	all[2]--;
+	return (cmd);
 }

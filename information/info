@@ -1,15 +1,28 @@
+return ((cmd = cmd_line_modification((char *[]){"aaaaa", "Bbbbbb", "aasdasd", "qweqwe", NULL}, cmd, len, tmp, main)));
+
+
+
+
+
+
+
+
+
+
+
+
 // pid_t   process;
 
     // process = fork();
     //     printf("Original program,  pid=%d\n",  getpid());
-    //     if (process == 0) 
+    //     if (process == 0)
     //     {
-    //         printf("In child process,  pid=%d,  ppid=%d\n", 
+    //         printf("In child process,  pid=%d,  ppid=%d\n",
     //             getpid(),  getppid());
     //     }
     //     else
     //     {
-    //         printf("In parent,  pid=%d,  fork returned=%d\n", 
+    //         printf("In parent,  pid=%d,  fork returned=%d\n",
     //                 getpid(),  process);
     //     }
     //     ft_printf("Hi\n");
@@ -48,13 +61,13 @@ BASH: for ^D
 
 bash-3.2$ exit
 There are stopped jobs.
-bash-3.2$ 
+bash-3.2$
 
-#define SIGHUP  1   /* Hangup the process */ 
-#define SIGINT  2   /* Interrupt the process */ 
-#define SIGQUIT 3   /* Quit the process */ 
-#define SIGILL  4   /* Illegal instruction. */ 
-#define SIGTRAP 5   /* Trace trap. */ 
+#define SIGHUP  1   /* Hangup the process */
+#define SIGINT  2   /* Interrupt the process */
+#define SIGQUIT 3   /* Quit the process */
+#define SIGILL  4   /* Illegal instruction. */
+#define SIGTRAP 5   /* Trace trap. */
 #define SIGABRT 6   /* Abort. */
 
 struct termios {
@@ -63,6 +76,6 @@ struct termios {
     tcflag_t c_cflag;      /* control modes */
     tcflag_t c_lflag;      /* local modes */ - (ICANON - “canonical” mode – also known as “line editing” mode), (ECHO),
                                                 (ISIG - ^C and ^Z (and friends) generate signals or not)
-    cc_t     c_cc[NCCS];   /* control chars */ (VINTR – Generate a SIGINT (^C by default), 
+    cc_t     c_cc[NCCS];   /* control chars */ (VINTR – Generate a SIGINT (^C by default),
                                                 (VSUSP – Generate a SIGTSTP (stop the program) (^Z by default))
 }

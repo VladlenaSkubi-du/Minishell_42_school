@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/13 20:24:05 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/14 22:38:03 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,65 +17,69 @@
 **main-fucntion and print prompt.
 */
 
-int             nl_signals(char c, char *cmd, unsigned int *all)
+int					nl_signals(char c, char *cmd, unsigned int *all)
 {
-    char        **scmd;
-    int         i;
+	char			**scmd;
+	int				i;
 
-    i = 0;
-    help_nl_signal(all);
-    ft_putchar('\n');
-    if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FLAG_NL))
-    {
-        if (all[1] & FLAG_SCMD)
-        {
-            scmd = ft_strsplit(cmd, ';');
-            // while (scmd[i])
-            //     check_command(scmd[i++], );
-            ft_mapdel(scmd, i);
-        }
-        else
-            check_command(cmd, all[0]);
-    }
-    //free(cmd);
-    return (1);
+	i = 0;
+	help_nl_signal(all);
+	ft_putchar('\n');
+	if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FL_NL))
+	{
+		if (all[1] & FL_SCMD)
+		{
+			scmd = ft_strsplit(cmd, ';');
+			while (scmd[i])
+			{
+				check_command(scmd[i], ft_strlen(scmd[i]));
+				i++;
+			}
+			ft_mapdel(scmd, i);
+		}
+		else
+			check_command(cmd, all[0]);
+	}
+	free(cmd);
+	return (1);
 }
 
 /*
 **Here we print and add a printable symble to the command-line.
 */
 
-char            *printable_parce(char c, char *cmd, unsigned int *all)
+char				*printable_parce(char c, char *cmd, unsigned int *all)
 {
-    if (all[3] > all[2])
-    {
-        while (all[2] != all[3])
-            cmd = str_add_symbol(cmd, ' ', all);
-    }
-    (all[2] <= all[3]) ? write(STDOUT_FILENO, &c, 1) : 0;
-    cmd = str_add_symbol(cmd, c, all);
-    (c == ';') ? all[1] |= FLAG_SCMD : 0;
-    (c == '#' || c == ':') ? all[1] |= FLAG_NL : 0;
-    return (cmd);
+	if (all[3] > all[2])
+	{
+		while (all[2] != all[3])
+			cmd = str_add_symbol(cmd, ' ', all);
+	}
+	(all[2] <= all[3]) ? write(STDOUT_FILENO, &c, 1) : 0;
+	cmd = str_add_symbol(cmd, c, all);
+	(c == ';') ? all[1] |= FL_SCMD : 0;
+	return (cmd);
 }
 
 /*
 **Here we react to a "<" and ">" signal.
 */
 
-void            esc_leftright(char c, char *cmd, unsigned int *all)
+void				esc_leftright(char c, char *cmd, unsigned int *all)
 {
-    (c == 91 && (all[1] & FLAG_ESC)) ? all[1] |= FLAG_OSQBRK : 0;
-    if (c == 68 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] > PROMPT)
-    {
-        all[3]--;
-        write(STDOUT_FILENO, "\033[D", 3);
-    }
-    else if (c == 67 && (all[1] & FLAG_ESC) && (all[1] & FLAG_OSQBRK) && all[3] < all[5] - 1)
-    {
-        all[3]++;
-        write(STDOUT_FILENO, "\033[C", 3);
-    }
+	(c == 91 && (all[1] & FL_ESC)) ? all[1] |= FL_OSQBRK : 0;
+	if ((c == 'D' || c == 'B') && (all[1] & FL_ESC) &&
+		(all[1] & FL_OSQBRK) && all[3] > PROMPT)
+	{
+		all[3]--;
+		write(STDOUT_FILENO, "\033[D", 3);
+	}
+	else if ((c == 'C' || c == 'A') && (all[1] & FL_ESC) &&
+		(all[1] & FL_OSQBRK) && all[3] < all[5] - 1)
+	{
+		all[3]++;
+		write(STDOUT_FILENO, "\033[C", 3);
+	}
 }
 
 /*
@@ -83,12 +87,12 @@ void            esc_leftright(char c, char *cmd, unsigned int *all)
 **and delete a printable symble from the command-line.
 */
 
-char            *delete_symbol(char *cmd, unsigned int *all)
+char				*del_symbol(char *cmd, unsigned int *all)
 {
-    all[3]--;
-    write(STDOUT_FILENO, "\033[D \033[D", 7);
-    cmd = str_del_symbol(cmd, all);
-    return (cmd);
+	all[3]--;
+	write(STDOUT_FILENO, "\033[D \033[D", 7);
+	cmd = str_del_symbol(cmd, all);
+	return (cmd);
 }
 
 /*
@@ -103,36 +107,39 @@ char            *delete_symbol(char *cmd, unsigned int *all)
 **Printing of printable symbols with writing to the cmd-line.
 **
 **FLAGS in all[1]:
-**FLAG_NL - next line without command-line analysis;
-**FLAG_SCMD - there are several commands
-**FLAG_ESC - there was '\033' detected;
-**FLAG_OSQBRK - there was an open square bracket '['.
+**FL_NL - next line without command-line analysis;
+**FL_SCMD - there are several commands
+**FL_ESC - there was '\033' detected;
+**FL_OSQBRK - there was an open square bracket '['.
 **
 **The main reactions are learned from bash-shell.
 */
 
-int            readline(void)
+int					readline(void)
 {
-    char                *cmd;
-    unsigned int        all[8];
-    unsigned char       c;
+	char			*cmd;
+	unsigned int	all[8];
+	unsigned char	c;
 
-    init_all(all);
-    cmd = (char*)ft_xmalloc(all[0]);
-    while (1)
-    {
-        read(STDIN_FILENO, &c, 1);
-        (c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
-        if (c == 3 || c == 10 || c == 13 || c == '\n')
-            return (nl_signals(c, cmd, all));
-        if (ft_isprint(c) && !(all[1] & FLAG_ESC))
-            cmd = printable_parce(c, cmd, all);
-        (c == '\033') ? all[1] |= FLAG_ESC : 0;
-        (all[1] & FLAG_ESC) ? esc_leftright(c, cmd, all) : 0;
-        ((c == 'D' || c == 'C') && (all[1] & FLAG_ESC)) ? all[1] ^= FLAG_ESC : 0;
-        all[4] = (all[2] >= all[5]) ? all[2] / all[5] : 0;
-        (c == 127 && all[2] > 0 && all[3] > PROMPT) ? cmd = delete_symbol(cmd, all) : 0;
-    }
-    free(cmd);
-    return (0);
+	init_all(all);
+	cmd = (char*)ft_xmalloc(all[0]);
+	while (1)
+	{
+		read(STDIN_FILENO, &c, 1);
+		(c == 4 && !cmd[0]) ? cmd_exit(cmd) : 0;
+		if (c == 3 || c == 10 || c == 13 || c == '\n')
+			return (nl_signals(c, cmd, all));
+		if (ft_isprint(c) && !(all[1] & FL_ESC))
+			cmd = printable_parce(c, cmd, all);
+		(c == '\033') ? all[1] |= FL_ESC : 0;
+		(all[1] & FL_ESC) ? esc_leftright(c, cmd, all) : 0;
+		((c == 'D' || c == 'C' || c == 'A' || c == 'B') &&
+			(all[1] & FL_ESC)) ? all[1] ^= FL_ESC : 0;
+		all[4] = (all[2] >= all[5]) ? all[2] / all[5] : 0;
+		(c == 127 && all[2] > 0 && all[3] > PROMPT) ? cmd = del_symbol(cmd, all) : 0;
+		if (ft_isprint(c) == 0)
+			;
+	}
+	free(cmd);
+	return (0);
 }

@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_env_set_unset.c                                :+:      :+:    :+:   */
+/*   cmd_exit_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/14 17:29:07 by sschmele         ###   ########.fr       */
+/*   Created: 2019/09/14 16:59:04 by sschmele          #+#    #+#             */
+/*   Updated: 2019/09/14 17:52:16 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void				cmd_env(char *cmd, int flag)
+void		cmd_exit(char *cmd)
 {
-	int				i;
-	extern char		**environ;
-
-	i = 0;
-	while (environ[i])
-		ft_putendl(environ[i++]);
+	ft_putendl("exit");
+	reset_canonical_input();
+	free(cmd);
+	exit(1);
 }
 
-void				cmd_setenv(char *cmd, int flag)
+void		cmd_cd(char *cmd, int flag)
 {
-	ft_putendl(cmd);
-}
-
-void				cmd_unsetenv(char *cmd, int flag)
-{
+	flag = 0;
 	ft_putendl(cmd);
 }
