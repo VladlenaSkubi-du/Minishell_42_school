@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/13 21:01:35 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 10:52:15 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,16 @@
 # define ECHO_OQUT		0x80
 
 struct termios			g_backup_tty;
+
+typedef struct			s_signs
+{
+	int					i;
+	int					j;
+	int					word;
+	int					flag;
+	int					tmp;
+	char				*main;
+}						t_signs;
 
 /*
 **The list of working functions - file main.c
@@ -116,5 +126,6 @@ int						count_env(void);
 */
 
 void					ft_bzero_int(int *arr, int len);
+
 
 #endif
