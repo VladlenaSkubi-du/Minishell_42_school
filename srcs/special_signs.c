@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 12:40:48 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/14 23:00:45 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:58:58 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,41 +37,45 @@ int				special_signs_check(char *cmd, int len)
 	return (0);
 }
 
-char			*special_tilda_processing(char *cmd, int *len, int i)
+char			*special_tilda_processing(char *cmd, int *len)
 {
-	extern char	**environ;
 	short		flag;
 	t_signs		s;
+	static int	a;
 
 	flag = 0;
 	s.flag = 0;
-	while (cmd[i])
+	while (cmd[a])
 	{
-		if (cmd[i] == '"' || cmd[i] == '\'')
+		if (cmd[a] == '"' || cmd[a] == '\'')
 		{
-			flag = (cmd[i] == '"' && flag == 0) ? 1 : flag;
-			flag = (cmd[i] == '"' && flag == 1) ? 0 : flag;
-			flag = (cmd[i] == '\'' && flag == 0) ? 2 : flag;
-			flag = (cmd[i] == '\'' && flag == 2) ? 0 : flag;
+			flag = quatations_indication(cmd[a], flag);
+			a++;
 		}
-		if (!(cmd[i] == '~' && flag == 0) || cmd[i] != '~')
-			i++;
-		else
+		if (cmd[a] == '~' && flag == 0)
 		{
-			s.main = ft_strdup("HOME");
+			s.i = a;
 			cmd = cmd_line_modification(cmd, len, s);
 			free(s.main);
 			return (cmd);
 		}
+		(!(cmd[a] == '\'' || cmd[a] == '"')) ? a++ : 0;
 	}
 	return (cmd);
 }
 
 /*
-**@tmp[4] where: tmp[0] = counter of symbols in the word before the separator;
-**tmp[1] = counter of the position in the line;
-**tmp[2] = flag, from which function we come to the cmd_line_modification-function;
-**tmp[3] = just working integer;
+**@s consists of:
+**s.i - counter in the full cmd-line (f.e. "echo $$ aaa",
+**if s.i = 3, cmd[s.i] = 'o');
+**s.j - is counter in the environ - counter of lines;
+**s.word - counter of the word needed: $HOME will be 5, $PWD will be 4;
+**s.flag - is for cmd_line_modification-function to know from which case
+**information comes: 0 - there is tilda, 1 - there is $$ (pid),
+**2 - name found in environ, 3 - name is not found in environ;
+**s.tmp - just for any case;
+**s.main - what we need to add to the cmd-line: in case of "flag == 3"
+**will be equal to NULL.
 */
 
 char			*special_dollar_processing_1(char *cmd, int *len, int i)
@@ -80,7 +84,7 @@ char			*special_dollar_processing_1(char *cmd, int *len, int i)
 
 	s.word = 1;
 	if (((s.main = ft_strchr(cmd + i, '$')) == NULL)
-		|| (s.main != NULL && s.main[1] == '\0'))
+		|| (s.main != NULL && (s.main[1] == '\0' || s.main[1] == ' ')))
 		return (cmd);
 	s.i = s.main - cmd - i;
 	while (signs_indication(cmd[s.i + s.word]) == 0 && cmd[s.i + s.word])
@@ -88,12 +92,12 @@ char			*special_dollar_processing_1(char *cmd, int *len, int i)
 	if (s.word == 1 && cmd[s.i + s.word] == '$')
 	{
 		s.flag = 1;
-		s.main = ft_strdup(ft_itoa((int)getpid()));
+		s.main = ft_itoa((int)getpid());
 		cmd = cmd_line_modification(cmd, len, s);
 		free(s.main);
 		return (cmd);
 	}
-	return (special_dollar_processing_2(cmd, len, s));
+	return (cmd = special_dollar_processing_2(cmd, len, s));
 }
 
 char			*special_dollar_processing_2(char *cmd, int *len, t_signs s)
@@ -116,8 +120,7 @@ char			*special_dollar_processing_2(char *cmd, int *len, t_signs s)
 		s.main = NULL;
 	}
 	cmd = cmd_line_modification(cmd, len, s);
-	printf("CMD - %s\n", cmd);
-	(s.main != NULL) ? free(s.main) : 0;
+	free(s.main);
 	return (cmd);
 }
 
@@ -125,17 +128,26 @@ char			*cmd_line_modification(char *cmd, int *len, t_signs s)
 {
 	char		*cmd_end;
 	int			len_full;
+	extern char	**environ;
 
-	if (s.flag == 0 || s.flag == 1)
+	if (s.flag == 1)
 		cmd_end = ft_strdup(cmd + s.i + s.word + 1);
 	else if (s.flag == 2 || s.flag == 3)
 		cmd_end = ft_strdup(cmd + s.i + s.word);
-	ft_bzero(cmd + s.i, *len - s.i);
+	else if (s.flag == 0)
+	{
+		s.j = 0;
+		while (ft_strncmp(environ[s.j], "HOME", 4) != 0)
+			s.j++;
+		s.main = ft_strdup(&environ[s.j][5]);
+		cmd_end = ft_strdup(cmd + s.i + s.word);
+	}
 	len_full = ft_strlen(cmd_end) + s.i + ft_strlen(s.main);
+	ft_bzero(cmd + s.i, *len - s.i);
 	cmd = (len_full + 1 > *len) ? ft_realloc(cmd, *len, len_full + 1) : cmd;
 	(s.main != NULL) ? ft_strcat(cmd, s.main) : 0;
-	ft_strcat(cmd, ((s.flag == 3 && cmd_end[0] == ' ') ? &cmd_end[1] : cmd_end));
-	printf("CMD AFTER - %s\n", cmd);
+	ft_strcat(cmd, ((s.flag == 3 && cmd_end[0] == ' ') ?
+		&cmd_end[1] : cmd_end));
 	free(cmd_end);
 	*len = len_full;
 	return (cmd);

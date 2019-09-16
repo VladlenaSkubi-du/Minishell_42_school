@@ -6,13 +6,13 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/14 22:36:11 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:43:18 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void			check_command(char *cmd, int len)
+char			*check_command(char *cmd, int len)
 {
 	int			i;
 	int			tmp;
@@ -24,20 +24,21 @@ void			check_command(char *cmd, int len)
 	{
 		write(STDERR_FILENO,
 			"Readline call: minishell is too baby for that\n", 47);
-		return ;
+		return (cmd);
 	}
 	while (1)
 	{
 		tmp = len;
 		cmd = special_dollar_processing_1(cmd, &len, i);
-		cmd = special_tilda_processing(cmd, &len, i);
+		cmd = special_tilda_processing(cmd, &len);
 		if (tmp == len)
 			break ;
 	}
-	build_in_minishell(cmd, i, len);
+	buildin_minishell(cmd, i, len);
+	return (cmd);
 }
 
-void			build_in_minishell(char *cmd, int i, int len)
+void			buildin_minishell(char *cmd, int i, int len)
 {
 	int			flag;
 

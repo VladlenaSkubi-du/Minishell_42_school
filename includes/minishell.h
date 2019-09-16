@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/14 22:35:36 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 12:58:18 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,17 @@
 # include "libft.h"
 # include "ft_printf.h"
 
+/*
+**@t_signs is used in the file special-signs.c because of the norm
+*/
+
 typedef struct			s_signs
 {
 	int					i;
 	int					j;
 	int					word;
 	int					flag;
-	int					tmp;
+	char				*tmp;
 	char				*main;
 }						t_signs;
 
@@ -96,8 +100,8 @@ void					help_nl_signal(unsigned int *all);
 **The list of working functions - file commands_check.c
 */
 
-void					check_command(char *cmd, int len);
-void					build_in_minishell(char *cmd, int i, int len);
+char					*check_command(char *cmd, int len);
+void					buildin_minishell(char *cmd, int i, int len);
 void					search_command(char *cmd);
 
 /*
@@ -138,7 +142,7 @@ void					cmd_unsetenv(char *cmd, int flag);
 int 					special_signs_check(char *cmd, int len);
 char					*special_dollar_processing_1(char *cmd, int *len, int i);
 char					*special_dollar_processing_2(char *cmd, int *len, t_signs s);
-char					*special_tilda_processing(char *cmd, int *len, int i);
+char					*special_tilda_processing(char *cmd, int *len);
 char					*cmd_line_modification(char *cmd, int *len, t_signs s);
 
 /*
@@ -158,5 +162,6 @@ int						count_env(void);
 void					ft_bzero_int(int *arr, int len);
 int						signs_indication(char c);
 void					ft_arrdel(char **arr);
+short			quatations_indication(char c, short flag);
 
 #endif

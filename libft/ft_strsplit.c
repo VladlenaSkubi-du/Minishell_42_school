@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/29 17:29:22 by sschmele          #+#    #+#             */
-/*   Updated: 2019/08/03 19:05:47 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/14 15:42:41 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char			**ft_strsplit(char const *s, char c)
 		return (NULL);
 	len_p = 0;
 	ac = get_words_nb(s, c);
-	if (!(av = (char**)malloc(ac * sizeof(char*) + 1)))
+	if (!(av = (char**)malloc((ac + 1) * (sizeof(char*)))))
 		return (NULL);
 	split_it_for_me(s, c, len_p, av);
 	return (av);

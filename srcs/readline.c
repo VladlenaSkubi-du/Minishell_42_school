@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/14 22:38:03 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 11:40:51 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ int					nl_signals(char c, char *cmd, unsigned int *all)
 			scmd = ft_strsplit(cmd, ';');
 			while (scmd[i])
 			{
-				check_command(scmd[i], ft_strlen(scmd[i]));
+				scmd[i] = check_command(scmd[i], ft_strlen(scmd[i]));
 				i++;
 			}
 			ft_mapdel(scmd, i);
 		}
 		else
-			check_command(cmd, all[0]);
+			cmd = check_command(cmd, all[0]);
 	}
 	free(cmd);
 	return (1);
@@ -140,6 +140,6 @@ int					readline(void)
 		if (ft_isprint(c) == 0)
 			;
 	}
-	free(cmd);
+	//free(cmd);
 	return (0);
 }
