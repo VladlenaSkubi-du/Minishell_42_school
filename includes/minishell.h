@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 10:52:15 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/14 22:35:36 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,6 @@
 # include "libft.h"
 # include "ft_printf.h"
 
-# define MAX			5
-# define PROMPT			3
-# define FLAG_NL		0x1
-# define FLAG_SCMD		0x2
-# define FLAG_ESC		0x4
-# define FLAG_OSQBRK	0x8
-# define ECHO_N			0x10
-# define ECHO_E			0x20
-# define ECHO_EE		0x40
-# define ECHO_OQUT		0x80
-
-struct termios			g_backup_tty;
-
 typedef struct			s_signs
 {
 	int					i;
@@ -51,6 +38,30 @@ typedef struct			s_signs
 	int					tmp;
 	char				*main;
 }						t_signs;
+
+/*
+**Where: MAX - length of the command line while readline processing: how many
+**bytes I expect to get from user not ot make a lot of reallocs and not to
+**lose memory unused;
+**PROMPT: the length of prompt-string for readline processing;
+**Beginning "FLAG" - used in readline:
+**Beginning "ECHO" - used in echo-cmd-processing
+*/
+
+# define MAX			5
+# define PROMPT			3
+# define FL_NL			0x1
+# define FL_SCMD		0x2
+# define FL_ESC			0x4
+# define FL_OSQBRK		0x8
+# define ECHO_N			0x10
+# define ECHO_E			0x20
+# define ECHO_EE		0x40
+# define E_OQUT			0x80
+# define E_OTYS			0x100
+# define E_OTYD			0x200
+
+struct termios			g_backup_tty;
 
 /*
 **The list of working functions - file main.c
@@ -66,7 +77,7 @@ void					save_environment(void);
 */
 
 int						readline();
-char					*delete_symbol(char *cmd, unsigned int *all);
+char					*del_symbol(char *cmd, unsigned int *all);
 void					esc_leftright(char c, char *cmd, unsigned int *all);
 char					*printable_parce(char c, char *cmd, unsigned int *all);
 int						nl_signals(char c, char *cmd, unsigned int *all);
@@ -86,19 +97,35 @@ void					help_nl_signal(unsigned int *all);
 */
 
 void					check_command(char *cmd, int len);
+void					build_in_minishell(char *cmd, int i, int len);
 void					search_command(char *cmd);
 
 /*
 **The list of builtins we have to implement: echo, cd, setenv, unsetenv, env,
-**exit - file cmd_exit_echo_cd.c and cmd_env_set_unset.c
+**exit.
+*/
+
+/*
+**File cmd_echo.c
+*/
+
+void					cmd_echo(char *cmd, int len, int flag);
+int						cmd_echo_flags(char *cmd, int len, int *flag, int i);
+void					cmd_echo_output(char *cmd, int len, int *flag, int i);
+int						cmd_echo_escape(char *cmd, int i);
+int						cmd_echo_quatations(char c, int *flag);
+
+/*
+**File cmd_exit_cd.c
 */
 
 void					cmd_exit(char *cmd);
-void					cmd_echo(char *cmd, int len, int flag);
-int						cmd_echo_flags(char *cmd, int len, int *flag, int i);
-void					cmd_echo_output(char *cmd, int len, int flag, int i);
-int						cmd_echo_escape(char *cmd, int i);
 void					cmd_cd(char *cmd, int flag);
+
+/*
+**File cmd_env_set_unset.c
+*/
+
 void					cmd_env(char *cmd, int flag);
 void					cmd_setenv(char *cmd, int flag);
 void					cmd_unsetenv(char *cmd, int flag);
@@ -109,7 +136,10 @@ void					cmd_unsetenv(char *cmd, int flag);
 */
 
 int 					special_signs_check(char *cmd, int len);
-char					*special_signs_processing(char *cmd, int *len, int i);
+char					*special_dollar_processing_1(char *cmd, int *len, int i);
+char					*special_dollar_processing_2(char *cmd, int *len, t_signs s);
+char					*special_tilda_processing(char *cmd, int *len, int i);
+char					*cmd_line_modification(char *cmd, int *len, t_signs s);
 
 /*
 **Other functions used - the file other_functions_1.c
@@ -126,6 +156,7 @@ int						count_env(void);
 */
 
 void					ft_bzero_int(int *arr, int len);
-
+int						signs_indication(char c);
+void					ft_arrdel(char **arr);
 
 #endif
