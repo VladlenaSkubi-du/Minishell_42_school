@@ -6,11 +6,19 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 12:43:18 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 17:10:24 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+**Before commands as strings go to other functions to function, we check if
+**there are '~' or '\', '"', '$', '\'', '{', '}', '(', ')', '[', ']'. In case of
+** '~' or '$' the command-line is changed.
+**@i - is counter in cmd-line;
+**@tmp - working value, two times reused;
+*/
 
 char			*check_command(char *cmd, int len)
 {
@@ -34,11 +42,16 @@ char			*check_command(char *cmd, int len)
 		if (tmp == len)
 			break ;
 	}
-	buildin_minishell(cmd, i, len);
+	builtin_minishell(cmd, i, len);
 	return (cmd);
 }
 
-void			buildin_minishell(char *cmd, int i, int len)
+/*
+**@flag - is used to count, if we entered one of build-in finctions. If
+**not, we go further to search the commands in $PATH
+*/
+
+void			builtin_minishell(char *cmd, int i, int len)
 {
 	int			flag;
 

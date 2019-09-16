@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 12:58:18 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/16 20:04:52 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ typedef struct			s_signs
 {
 	int					i;
 	int					j;
-	int					word;
-	int					flag;
+	int					w;
+	int					fl;
 	char				*tmp;
 	char				*main;
 }						t_signs;
@@ -101,7 +101,7 @@ void					help_nl_signal(unsigned int *all);
 */
 
 char					*check_command(char *cmd, int len);
-void					buildin_minishell(char *cmd, int i, int len);
+void					builtin_minishell(char *cmd, int i, int len);
 void					search_command(char *cmd);
 
 /*
@@ -125,14 +125,17 @@ int						cmd_echo_quatations(char c, int *flag);
 
 void					cmd_exit(char *cmd);
 void					cmd_cd(char *cmd, int flag);
+void					cmd_env(char *cmd, int flag);
 
 /*
 **File cmd_env_set_unset.c
 */
 
-void					cmd_env(char *cmd, int flag);
 void					cmd_setenv(char *cmd, int flag);
+void					cmd_setenv_environ_1(char *name, t_signs s, char **ptr);
+char					*cmd_setenv_environ_2(char *name, int i, char *env);
 void					cmd_unsetenv(char *cmd, int flag);
+void					cmd_unsetenv_environ(char *name, t_signs s, char **ptr);
 
 /*
 **The list of helpers for the build-in-commands that are to be implemented
@@ -141,9 +144,9 @@ void					cmd_unsetenv(char *cmd, int flag);
 
 int 					special_signs_check(char *cmd, int len);
 char					*special_dollar_processing_1(char *cmd, int *len, int i);
-char					*special_dollar_processing_2(char *cmd, int *len, t_signs s);
+char					*special_dollar_processing_2(char *cmd, int *len, t_signs s, int len_f);
 char					*special_tilda_processing(char *cmd, int *len);
-char					*cmd_line_modification(char *cmd, int *len, t_signs s);
+char					*cmd_line_modification(char *cmd, int *len, t_signs s, int len_full);
 
 /*
 **Other functions used - the file other_functions_1.c
@@ -162,6 +165,6 @@ int						count_env(void);
 void					ft_bzero_int(int *arr, int len);
 int						signs_indication(char c);
 void					ft_arrdel(char **arr);
-short			quatations_indication(char c, short flag);
+short					quatations_indication(char c, short flag);
 
 #endif
