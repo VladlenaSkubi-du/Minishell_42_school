@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 20:08:10 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/17 19:31:11 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,11 @@ char				*cmd_setenv_environ_2(char *name, int i, char *env)
 	int				len;
 
 	if (name[i + 1] == '\0')
-		ft_bzero(&env[i + 1], ft_strlen(env - i - 1)); //DOES NOT WORK
+	{
+		printf("%d\n", ft_strlen(env) - i - 1);
+		while (env[++i])
+			env[i] = '\0';
+	}
 	else
 	{
 		len = ft_strlen(name);
