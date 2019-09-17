@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 11:40:51 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/17 21:09:26 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 **main-fucntion and print prompt.
 */
 
-int					nl_signals(char c, char *cmd, unsigned int *all)
+int					nl_signals(char c, char *cmd, unsigned int *all) //проверить str_trim на пробелы и если строка нулевая, не запускать дальше вообще
 {
 	char			**scmd;
 	int				i;
@@ -140,6 +140,5 @@ int					readline(void)
 		if (ft_isprint(c) == 0)
 			;
 	}
-	//free(cmd);
 	return (0);
 }
