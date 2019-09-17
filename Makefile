@@ -25,25 +25,26 @@ LIBFT = libft/libft.a
 
 all:	$(NAME)
 
-$(NAME):		text $(OBJS)
-				@make -C ./libft
-				@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
-				@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
+$(NAME):	$(OBJS) $(LIBFT)
+	@echo "\x1b[32;01mCompiling minishell...\x1b[32;01m"
+	@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
+	@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
 
-text:
-				@echo "\x1b[32;01mCompiling your minishell...\x1b[0m"
+$(OBJS):	$(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
+	@mkdir -p $(DIR_O)
+	gcc $(FLAGS) -c -I includes -o $@ $<
 
-$(OBJS):		$(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
-				@mkdir -p $(DIR_O)
-				gcc $(FLAGS) -c -I includes -o $@ $<
+$(LIBFT):
+	@make -C ./libft
+
 clean:
-				@echo "\033[34mDeliting minishell o-files\033[0m"
-				@/bin/rm -Rf $(DIR_O)
-				@make clean --directory ./libft
+	@echo "\033[34mDeliting minishell o-files\033[0m"
+	@/bin/rm -Rf $(DIR_O)
+	@make clean --directory ./libft
 
 fclean: clean
-				@echo "\033[34mDeliting minishell binary\033[0m"
-				@/bin/rm -f $(NAME)
-				@make fclean --directory ./libft
+	@echo "\033[34mDeliting minishell binary\033[0m"
+	@/bin/rm -f $(NAME)
+	@make fclean --directory ./libft
 
 re:		fclean all

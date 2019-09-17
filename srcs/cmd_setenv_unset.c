@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/17 19:31:11 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/17 20:55:59 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ char				*cmd_setenv_environ_2(char *name, int i, char *env)
 
 	if (name[i + 1] == '\0')
 	{
-		printf("%d\n", ft_strlen(env) - i - 1);
 		while (env[++i])
 			env[i] = '\0';
 	}
@@ -122,23 +121,20 @@ void				cmd_unsetenv_environ(char *name, t_signs s, char **ptr)
 	while (name[s.i])
 		s.i++;
 	while (environ[++s.j])
-		if (ft_strncmp(environ[s.j], name, s.i) == 0 //посмотреть функцию strnequ
-				&& environ[s.j][s.i] == '=')
+		if (ft_strncmp(environ[s.j], name, s.i - 1) == 0
+				&& (environ[s.j][s.i] == '=' || environ[s.j][s.i - 1] == '='))
 			break ;
 	if (environ[s.j] != NULL)
 	{
+		s.i = 0;
+		while (s.i < s.j)
+			s.i++;
 		free(environ[s.j]);
-		s.w = s.j;
-		while (environ[++s.j])
-			;
-		s.i = -1;
-		ptr = (char**)ft_xmalloc((s.j - 1) * (sizeof(char*)));
-		while (++s.i < s.w)
-			ptr[s.i] = environ[s.i];
-		while (++s.i < s.j)
-			ptr[s.i] = environ[s.i];
-		ptr[s.i] = NULL;
-		free(environ);
-		environ = ptr;
+		while (environ[s.i + 1])
+		{
+			environ[s.i] = environ[s.i + 1];
+			s.i++;
+		}
+		environ[s.i] = NULL;
 	}
 }
