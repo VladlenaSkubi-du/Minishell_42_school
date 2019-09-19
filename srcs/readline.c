@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/17 21:09:26 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/19 21:10:47 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,26 @@
 **main-fucntion and print prompt.
 */
 
-int					nl_signals(char c, char *cmd, unsigned int *all) //проверить str_trim на пробелы и если строка нулевая, не запускать дальше вообще
+int					nl_signals(char c, char *cmd, unsigned int *all)
 {
 	char			**scmd;
 	int				i;
+	char			*ptr;
 
-	i = 0;
 	help_nl_signal(all);
 	ft_putchar('\n');
 	if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FL_NL))
 	{
-		if (all[1] & FL_SCMD)
+		ptr = ft_strtrim(cmd);
+		free(cmd);
+		if (ptr[0] == '\0')
+			return (1);
+		cmd = ptr;
+		if ((i = -1) == -1 && all[1] & FL_SCMD)
 		{
 			scmd = ft_strsplit(cmd, ';');
-			while (scmd[i])
-			{
+			while (scmd[++i])
 				scmd[i] = check_command(scmd[i], ft_strlen(scmd[i]));
-				i++;
-			}
 			ft_mapdel(scmd, i);
 		}
 		else
