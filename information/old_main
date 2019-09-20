@@ -646,3 +646,22 @@ SPECIAL_SIGNS_PROCESSING
 	printf("%.*s - %d - %s\n", tmp, environ[j], ft_strncmp(environ[j], cmd + i + 1, tmp - 1), cmd + i + 1);
 
 !#$%'"\*
+
+
+
+
+
+// if (cmd[3] == '\0')
+	// {
+	// 	ft_bzero(&pwd[4], (len_1 = ft_strlen(&pwd[4])));
+	// 	if (len_1 < (len_2 = ft_strlen(&home[5])))
+	// 		pwd = ft_realloc(pwd, len_1, len_2 + 1);
+	// 	ft_strcpy(&pwd[4], &home[5]);
+	// }
+	// else if (cmd[3] == '-')
+	// {
+	// 	ft_bzero(&pwd[4], (len_1 = ft_strlen(&pwd[4])));
+	// 	if (len_1 < (len_2 = ft_strlen(swap)))
+	// 		pwd = ft_realloc(pwd, len_1, len_2 + 1);
+	// 	ft_strcpy(&pwd[4], swap);
+	// }

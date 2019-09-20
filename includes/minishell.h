@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 20:04:52 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/20 19:48:14 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int						cmd_echo_quatations(char c, int *flag);
 
 void					cmd_exit(char *cmd);
 void					cmd_cd(char *cmd, int flag);
+void					change_dir(char *cmd, char *old, char *pwd, char *home);
 void					cmd_env(char *cmd, int flag);
 
 /*
