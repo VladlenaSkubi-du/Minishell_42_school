@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 16:59:04 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/20 20:36:02 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/21 21:53:49 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,61 +47,72 @@ void			cmd_exit(char *cmd)
 void			cmd_cd(char *cmd, int j)
 {
 	extern char	**environ;
-	int			i;
-	char		*old;
-	char		*pwd;
-	char		*home;
+	t_signs		s;
 
-	i = 3;
-	j = 0;
-	while (ft_strncmp(environ[j], "OLDPWD", 6) != 0)
-		j++;
-	old = &environ[j][0];
-	j = 0;
-	while (ft_strncmp(environ[j], "PWD", 3) != 0)
-		j++;
-	pwd = &environ[j][0];
-	j = 0;
-	if (cmd[i] == '\0')
+	s.pwd = 0;
+	while (environ[s.pwd] && ft_strncmp(environ[s.pwd], "PWD=", 4) != 0)
+		s.pwd++;
+	(environ[s.pwd] == NULL) ? cmd_setenv("setenv PWD=", 0) : 0;
+	s.old = 0;
+	while (environ[s.old] && ft_strncmp(environ[s.old], "OLDPWD=", 7) != 0)
+		s.old++;
+	if (cmd[2] == '\0') //split if there is opportunity
 	{
-		while (ft_strncmp(environ[j], "HOME", 4) != 0)
-			j++;
-		home = &environ[j][0];
-		if (home[5] == '\0')
+		s.j = 0;
+		while (environ[s.j] && ft_strncmp(environ[s.j], "HOME=", 5) != 0)
+			s.j++;
+		if (environ[s.j] == NULL || environ[s.j][5] == '\0')
+		{
+			ft_putendl_fd("cd: HOME not set", 2);
 			return ;
+		}
+		s.main = &environ[s.j][5];
 	}
-	change_dir(cmd, old, pwd, home);
+	else if (!(cmd[3] == '\0') && !(cmd[3] == '-' && cmd[4] == '\0'))
+		s.main = &cmd[3];
+	change_dir(cmd, s);
 }
 
-void			change_dir(char *cmd, char *old, char *pwd, char *home)
+void			change_dir(char *cmd, t_signs s)
 {
 	extern char	**environ;
-	int			len_1;
-	int			len_2;
-	char		*what;
+	char		**ptr;
 
-	if (cmd[3] == '\0')
-		what = &home[5];
-	else if (cmd[3] == '-' && cmd[3 + 1] == '\0')
+	if (cmd[2] && (cmd[3] == '-' && cmd[4] == '\0'))
 	{
-		what = ft_strdup(&old[7]);
-		ft_putendl(what);
+		if (environ[s.old] == NULL || environ[s.old][7] == '\0')
+		{
+			ft_putendl_fd("cd: OLDPWD not set", 2);
+			return ;
+		}
+		s.main = ft_strdup(&environ[s.old][7]);
+		ft_putendl(s.main);
 	}
-	else
-		what = &cmd[3];
-	if ((len_1 = chdir(what)) < 0)
+	if ((s.w = chdir(s.main)) < 0)
 	{
-		ft_putendl("cmd_cd: no such file or directory: ");
-		ft_putendl(what);
+		ft_putstr_fd("cd: no such file or directory: ", 2);
+		ft_putendl_fd(s.main, 2);
 		return ;
 	}
-	ft_bzero(&old[7], (len_1 = ft_strlen(&old[7])));
-	(len_1 < (len_2 = ft_strlen(&pwd[4]))) ?
-		old = ft_realloc(old, len_1, len_2 + 1) : 0;
-	ft_strcpy(&old[7], &pwd[4]);
-	ft_bzero(&pwd[4], (len_1 = ft_strlen(&pwd[4])));
-	(len_1 < (len_2 = ft_strlen(what))) ?
-		pwd = ft_realloc(pwd, len_1, len_2 + 1) : 0;
-	ft_strcpy(&pwd[4], what);
-	(cmd[3] == '-' && cmd[3 + 1] == '\0') ? free(what) : 0;
+	if (environ[s.old] == NULL)
+		cmd_setenv("setenv OLDPWD=", 0);
+	change_environ(cmd, s);
+}
+
+void			change_environ(char *cmd, t_signs s)
+{
+	extern char	**environ;
+
+	s.len = 0;
+	if (environ[s.old][7] != '\0')
+		ft_bzero(&environ[s.old][7], (s.len = ft_strlen(&environ[s.old][7])));
+	if (s.len < (s.len1 = ft_strlen(&environ[s.pwd][4])))
+		environ[s.old] = ft_realloc(environ[s.old], 7, s.len1 + 8);
+	ft_strcpy(&environ[s.old][7], &environ[s.pwd][4]);
+	(environ[s.pwd][4] != '\0') ?
+		ft_bzero(&environ[s.pwd][4], (s.len = ft_strlen(&environ[s.pwd][4]))) : 0;
+	if (s.len < (s.len1 = ft_strlen(s.main)))
+		environ[s.pwd] = ft_realloc(environ[s.pwd], 4, s.len1 + 5);
+	ft_strcpy(&environ[s.pwd][4], s.main);
+	(cmd[2] && (cmd[3] == '-' && cmd[4] == '\0')) ? free(s.main) : 0;
 }

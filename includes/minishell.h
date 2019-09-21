@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/20 19:48:14 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/21 22:11:32 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,13 @@
 
 typedef struct			s_signs
 {
-	int					i;
-	int					j;
+	size_t				i;
+	size_t				j;
 	int					w;
+	int					old;
+	int					pwd;
+	size_t				len;
+	size_t				len1;
 	int					fl;
 	char				*tmp;
 	char				*main;
@@ -52,7 +56,7 @@ typedef struct			s_signs
 **Beginning "ECHO" - used in echo-cmd-processing
 */
 
-# define MAX			5
+# define MAX			3
 # define PROMPT			3
 # define FL_NL			0x1
 # define FL_SCMD		0x2
@@ -123,13 +127,14 @@ int						cmd_echo_quatations(char c, int *flag);
 **File cmd_exit_cd.c
 */
 
+void					cmd_env(char *cmd, int flag);
 void					cmd_exit(char *cmd);
 void					cmd_cd(char *cmd, int flag);
-void					change_dir(char *cmd, char *old, char *pwd, char *home);
-void					cmd_env(char *cmd, int flag);
+void					change_dir(char *cmd, t_signs s);
+void					change_environ(char *cmd, t_signs s);
 
 /*
-**File cmd_env_set_unset.c
+**File cmd_setenv_unset.c
 */
 
 void					cmd_setenv(char *cmd, int flag);
@@ -167,5 +172,6 @@ void					ft_bzero_int(int *arr, int len);
 int						signs_indication(char c);
 void					ft_arrdel(char **arr);
 short					quatations_indication(char c, short flag);
+void					many_commands(char *cmd);
 
 #endif

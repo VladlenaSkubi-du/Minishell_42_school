@@ -665,3 +665,155 @@ SPECIAL_SIGNS_PROCESSING
 	// 		pwd = ft_realloc(pwd, len_1, len_2 + 1);
 	// 	ft_strcpy(&pwd[4], swap);
 	// }
+
+
+
+
+void			cmd_cd(char *cmd, int j)
+{
+	extern char	**environ;
+	int			i;
+	char		*old;
+	char		*pwd;
+	char		*home;
+
+	i = 3;
+	j = 0;
+	while (ft_strncmp(environ[j], "OLDPWD", 6) != 0)
+		j++;
+	old = &environ[j][0];
+	j = 0;
+	while (ft_strncmp(environ[j], "PWD", 3) != 0)
+		j++;
+	pwd = &environ[j][0];
+	j = 0;
+	if (cmd[i] == '\0')
+	{
+		while (ft_strncmp(environ[j], "HOME", 4) != 0)
+			j++;
+		home = &environ[j][0];
+		if (home[5] == '\0')
+			return ;
+	}
+	change_dir(cmd, old, pwd, home);
+}
+
+void			change_dir(char *cmd, char *old, char *pwd, char *home)
+{
+	extern char	**environ;
+	int			len_1;
+	int			len_2;
+	char		*what;
+
+	if (cmd[3] == '\0')
+		what = &home[5];
+	else if (cmd[3] == '-' && cmd[3 + 1] == '\0')
+	{
+		what = ft_strdup(&old[7]);
+		ft_putendl(what);
+	}
+	else
+		what = &cmd[3];
+	if ((len_1 = chdir(what)) < 0)
+	{
+		ft_putstr("cmd_cd: no such file or directory: ");
+		ft_putendl(what);
+		return ;
+	}
+	if (cmd[3] == '\0' || (!(cmd[3] == '-' && cmd[3 + 1] == '\0')))
+	{
+		ft_putendl("HERE");
+		ft_bzero(&old[7], (len_1 = ft_strlen(&old[7])));
+		(len_1 < (len_2 = ft_strlen(&pwd[4]))) ?
+			old = ft_realloc(old, len_1, len_2 + 1) : 0;
+		ft_strcpy(&old[7], &pwd[4]);
+		ft_bzero(&pwd[4], (len_1 = ft_strlen(&pwd[4])));
+		(len_1 < (len_2 = ft_strlen(what))) ?
+			pwd = ft_realloc(pwd, len_1, len_2 + 1) : 0;
+		ft_strcpy(&pwd[4], what);
+		(cmd[3] == '-' && cmd[3 + 1] == '\0') ? free(what) : 0;
+	}
+	else if (cmd[3] == '-' && cmd[3 + 1] == '\0')
+	{
+		ft_bzero(&old[7], (len_1 = ft_strlen(&old[7])));
+		(len_1 < (len_2 = ft_strlen(&pwd[4]))) ?
+			old = ft_realloc(old, len_1, len_2 + 1) : 0;
+		ft_strcpy(&old[7], &pwd[4]);
+		ft_bzero(&pwd[4], (len_1 = ft_strlen(&pwd[4])));
+		if (len_1 < (len_2 = ft_strlen(what)))
+		{
+			pwd = ft_realloc(pwd, len_1, len_2 + 1);
+		}
+	}
+
+
+
+
+void			cmd_cd(char *cmd, int j)
+{
+	extern char	**environ;
+	int			old;
+	int			pwd;
+	char		*what;
+
+	j = 0;
+	what = NULL;
+	while (ft_strncmp(environ[j], "OLDPWD=", 7) != 0)
+		j++;
+	old = j;
+	j = 0;
+	while (ft_strncmp(environ[j], "PWD=", 4) != 0)
+		j++;
+	pwd = j;
+	if ((j = 0) == 0 && cmd[3] == '\0')
+	{
+		while (ft_strncmp(environ[j], "HOME=", 5) != 0)
+			j++;
+		what = ft_strdup(&environ[j][5]);
+		if (environ[j][5] == '\0')
+		{
+			ft_putendl("cmd_cd: HOME not set");
+			return ;
+		}
+	}
+	change_dir(cmd, old, pwd, what);
+}
+
+void			change_dir(char *cmd, int old, int pwd, char *what)
+{
+	extern char	**environ;
+	int			len_1;
+	int			len_2;
+
+	if (cmd[3] == '-' && cmd[3 + 1] == '\0')
+	{
+		if (environ[old] == NULL)
+		{
+			ft_putendl("cmd_cd: OLDPWD not set");
+			return ;
+		}
+		what = ft_strdup(&environ[old][7]);
+		ft_putendl(what);
+	}
+	else if (!(cmd[3] == '\0'))
+		what = ft_strdup(&cmd[3]);
+	if ((len_1 = chdir(what)) < 0)
+	{
+		ft_putstr("cmd_cd: no such file or directory: ");
+		ft_putendl(what);
+		return ;
+	}
+	if (environ[pwd] == NULL)
+	{
+
+	}
+	ft_bzero(&environ[old][7], (len_1 = ft_strlen(&environ[old][7])));
+	if (len_1 < (len_2 = ft_strlen(&environ[pwd][4])))
+		environ[old] = ft_realloc(environ[old], 7, len_2 + 8);
+	ft_strcpy(&environ[old][7], &environ[pwd][4]);
+	ft_bzero(&environ[pwd][4], (len_1 = ft_strlen(&environ[pwd][4])));
+	if (len_1 < (len_2 = ft_strlen(what)))
+		environ[pwd] = ft_realloc(environ[pwd], 4, len_2 + 5);
+	ft_strcpy(&environ[pwd][4], what);
+	free(what);
+}

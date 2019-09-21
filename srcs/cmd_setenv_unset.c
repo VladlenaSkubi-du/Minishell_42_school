@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/17 20:55:59 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/21 19:48:58 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,7 @@ void				cmd_setenv(char *cmd, int j)
 	s.i = 7;
 	if (ft_strchr(&cmd[s.i], '=') == NULL)
 	{
-		write(STDERR_FILENO,
-			"setenv: Environment variable can't be altered\n", 47);
+		ft_putendl_fd("setenv: Environment variable can't be altered", 2);
 		return ;
 	}
 	tmp = ft_strsplit(&cmd[s.i], ' ');
@@ -100,8 +99,7 @@ void				cmd_unsetenv(char *cmd, int j)
 
 	if (cmd[8] == '\0')
 	{
-		write(STDERR_FILENO,
-			"unsetenv: Too few arguments.\n", 30);
+		ft_putendl_fd("unsetenv: Too few arguments", 2);
 		return ;
 	}
 	s.i = 8;

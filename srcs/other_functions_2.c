@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 18:48:27 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 13:35:09 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/21 22:10:41 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,16 @@ short			quatations_indication(char c, short flag)
 	else if (c == '\'' && flag == 0)
 		flag = 2;
 	return (flag);
+}
+
+void			many_commands(char *cmd)
+{
+	char		**scmd;
+	int			i;
+
+	i = -1;
+	scmd = ft_strsplit(cmd, ';');
+	while (scmd[++i])
+		scmd[i] = check_command(scmd[i], ft_strlen(scmd[i]));
+	ft_mapdel(scmd, i);
 }
