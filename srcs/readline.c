@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/21 22:06:33 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 19:16:27 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 **main-fucntion and print prompt.
 */
 
-int					nl_signals(char c, char *cmd, unsigned int *all)
+int					nl_signals(char c, char *cmd, size_t *all)
 {
 	char			*ptr;
 
@@ -46,7 +46,7 @@ int					nl_signals(char c, char *cmd, unsigned int *all)
 **Here we print and add a printable symble to the command-line.
 */
 
-char				*printable_parce(char c, char *cmd, unsigned int *all)
+char				*printable_parce(char c, char *cmd, size_t *all)
 {
 	if (all[3] > all[2])
 	{
@@ -63,7 +63,7 @@ char				*printable_parce(char c, char *cmd, unsigned int *all)
 **Here we react to a "<" and ">" signal.
 */
 
-void				esc_leftright(char c, char *cmd, unsigned int *all)
+void				esc_leftright(char c, char *cmd, size_t *all)
 {
 	(c == 91 && (all[1] & FL_ESC)) ? all[1] |= FL_OSQBRK : 0;
 	if ((c == 'D' || c == 'B') && (all[1] & FL_ESC) &&
@@ -85,7 +85,7 @@ void				esc_leftright(char c, char *cmd, unsigned int *all)
 **and delete a printable symble from the command-line.
 */
 
-char				*del_symbol(char *cmd, unsigned int *all)
+char				*del_symbol(char *cmd, size_t *all)
 {
 	all[3]--;
 	write(STDOUT_FILENO, "\033[D \033[D", 7);
@@ -116,7 +116,7 @@ char				*del_symbol(char *cmd, unsigned int *all)
 int					readline(void)
 {
 	char			*cmd;
-	unsigned int	all[8];
+	size_t	all[8];
 	unsigned char	c;
 
 	init_all(all);

@@ -6,11 +6,18 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 12:40:48 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 19:26:19 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 19:53:43 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+**@count[3] exists because of the norm and consists of:
+**count[0] - for brackets;
+**count[1] - for double quatations;
+**count[2] - for single quatations.
+*/
 
 int				special_signs_check(char *cmd, int len)
 {
@@ -38,7 +45,7 @@ int				special_signs_check(char *cmd, int len)
 }
 
 /*
-**@s consists of:
+**@s exists because of the norm and consists of (used here):
 **s.i - counter in the full cmd-line (f.e. "echo $$ aaa",
 **if s.i = 3, cmd[s.i] = 'o');
 **s.j - is counter in the environ - counter of lines;
@@ -125,32 +132,32 @@ char			*special_dollar_processing_2(char *cmd, int *len,
 	return (cmd);
 }
 
-char			*cmd_line_modification(char *cmd, int *len,
-					t_signs s, int len_full)
+char			*cmd_line_modification(char *c, int *len,
+					t_signs s, int len_f)
 {
-	char		*cmd_end;
+	char		*cmd_e;
 	extern char	**environ;
 
 	if (s.fl == 1)
-		cmd_end = (cmd[s.i + s.w]) ? ft_strdup(cmd + s.i + s.w + 1) : NULL;
+		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w + 1) : NULL;
 	else if (s.fl == 2 || s.fl == 3)
-		cmd_end = (cmd[s.i + s.w]) ? ft_strdup(cmd + s.i + s.w) : NULL;
-	else if (s.fl == 0)
+		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w) : NULL;
+	else if ((s.j = 0) == 0 && s.fl == 0)
 	{
-		s.j = 0;
-		while (ft_strncmp(environ[s.j], "HOME", 4) != 0)
+		while (environ[s.j] && !(ft_strncmp(environ[s.j], "HOME", 4) == 0
+			&& environ[s.j][4] == '='))
 			s.j++;
-		cmd_end = (cmd[s.i + s.w]) ? ft_strdup(cmd + s.i + s.w) : NULL;
+		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w) : NULL;
 		s.main = ft_strdup(&environ[s.j][5]);
 	}
-	len_full = ft_strlen(cmd_end) + s.i + ft_strlen(s.main);
-	ft_bzero(cmd + s.i, *len - s.i);
-	cmd = (len_full + 1 > *len) ? ft_realloc(cmd, *len, len_full + 1) : cmd;
-	(s.main != NULL) ? ft_strcat(cmd, s.main) : 0;
-	if (cmd_end != NULL)
-		ft_strcat(cmd, (s.fl == 3 && *cmd_end == ' ') ? &cmd_end[1] : cmd_end);
-	(cmd_end != NULL) ? free(cmd_end) : 0;
+	len_f = ft_strlen(cmd_e) + s.i + ft_strlen(s.main);
+	(c[s.i] != 0) ? ft_bzero(c + s.i, ft_strlen(c) - s.i) : 0;
+	c = (len_f + 1 > *len) ? ft_realloc(c, *len, ft_strlen(c), len_f + 1) : c;
+	(s.main != NULL) ? c = ft_strcat(c, s.main) : 0;
+	if (cmd_e != NULL)
+		c = ft_strcat(c, (s.fl == 3 && *cmd_e == ' ') ? &cmd_e[1] : cmd_e);
+	(cmd_e != NULL) ? free(cmd_e) : 0;
 	(s.main != NULL) ? free(s.main) : 0;
-	*len = len_full;
-	return (cmd);
+	*len = len_f;
+	return (c);
 }

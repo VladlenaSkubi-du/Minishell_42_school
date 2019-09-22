@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 17:10:24 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 20:46:55 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 **@tmp - working value, two times reused;
 */
 
-char			*check_command(char *cmd, int len)
+char				*check_command(char *cmd, int len)
 {
-	int			i;
-	int			tmp;
+	int				i;
+	int				tmp;
 
 	i = 0;
 	while (cmd[i] == ' ')
@@ -51,9 +51,9 @@ char			*check_command(char *cmd, int len)
 **not, we go further to search the commands in $PATH
 */
 
-void			builtin_minishell(char *cmd, int i, int len)
+void				builtin_minishell(char *cmd, int i, int len)
 {
-	int			flag;
+	int				flag;
 
 	flag = 0;
 	(ft_strncmp(cmd + i, "exit", 4) == 0) ? cmd_exit(cmd) : 0;
@@ -64,10 +64,64 @@ void			builtin_minishell(char *cmd, int i, int len)
 	(ft_strncmp(cmd + i, "setenv", 6) == 0) ? cmd_setenv(cmd + i, flag++) : 0;
 	(ft_strncmp(cmd + i, "unsetenv", 8) == 0) ?
 		cmd_unsetenv(cmd + i, flag++) : 0;
-	(flag == 0) ? search_command(cmd + i) : 0;
+	(flag == 0) ? search_command(cmd + i, flag) : 0;
 }
 
-void			search_command(char *cmd)
+void				search_command(char *cmd, int fl)
 {
-	ft_putendl("DO PROCESSING");
+	extern char		**environ;
+	t_signs			s;
+
+	ft_putendl(cmd);
+	s.j = 0;
+	s.i = -1;
+	while (environ[s.j] && ft_strncmp(environ[s.j], "PATH=", 5) != 0)
+		s.j++;
+	if (environ[s.j] == NULL || environ[s.j][5] == '\0')
+	{
+		command_error(cmd, 0);
+		return ;
+	}
+	prepare_for_check(cmd, s);
+}
+
+void				prepare_for_check(char *cmd, t_signs s)
+{
+	extern char		**environ;
+	char			**dirpath;
+	char			**cmd_components;
+
+	dirpath = ft_strsplit(&environ[s.j][5], ':');
+	cmd_components = ft_strsplit(cmd, ' ');
+	if ((cmd_components[0][0] == '/' || cmd_components[0][0] == '.')
+		&& check_cmd_name(cmd_components) <= 0)
+	{
+		ft_arrdel(dirpath);
+		ft_arrdel(cmd_components);
+		return ;
+	}
+	while (dirpath[++s.i])
+		if (find_cmd_in_path(dirpath[s.i], cmd_components, s) == 0)
+			break ;
+	if (dirpath[s.i] == NULL)
+		command_error(cmd_components[0], 0);
+	ft_arrdel(dirpath);
+	ft_arrdel(cmd_components);
+}
+
+int					command_error(char *cmd, int fl)
+{
+	ft_putstr("minishell: ");
+	write(STDERR_FILENO, cmd, ft_strchrlen(cmd, ' '));
+	if (fl == 0)
+		ft_putendl_fd(": Command not found.", 2);
+	else if (fl == 1)
+		ft_putendl_fd(": No such file or directory found.", 2);
+	else if (fl == 2)
+		ft_putendl_fd(": Is a directory.", 2);
+	else if (fl == 3)
+		ft_putendl_fd(": Is not a regular file.", 2);
+	else if (fl == 4)
+		ft_putendl_fd(": Permission denied.", 2);
+	return (-1);
 }

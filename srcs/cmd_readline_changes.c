@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/21 22:10:24 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 19:18:48 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 **end of the cmd-line
 */
 
-void		help_nl_signal(unsigned int *all)
+void		help_nl_signal(size_t *all)
 {
 	if (all[4] && all[3] != all[2])
 	{
@@ -86,7 +86,7 @@ char		*help_str_change(char *cmd, char *swap, int point, char add)
 ** to start printing from the center or beginning of the command line
 */
 
-char		*str_add_symbol(char *cmd, char add, unsigned int *all)
+char		*str_add_symbol(char *cmd, char add, size_t *all)
 {
 	int		fact;
 	int		point;
@@ -96,7 +96,7 @@ char		*str_add_symbol(char *cmd, char add, unsigned int *all)
 	point = all[3] - PROMPT;
 	if (fact >= all[0] - 1)
 	{
-		cmd = ft_realloc(cmd, all[0], all[0] * 2);
+		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] * 2);
 		all[0] *= 2;
 	}
 	if (fact > point)
@@ -134,7 +134,7 @@ char		*str_add_symbol(char *cmd, char add, unsigned int *all)
 ** to start deleting from the center of the command line
 */
 
-char		*str_del_symbol(char *cmd, unsigned int *all)
+char		*str_del_symbol(char *cmd, size_t *all)
 {
 	int		fact;
 	int		point;
@@ -146,7 +146,7 @@ char		*str_del_symbol(char *cmd, unsigned int *all)
 		return (cmd);
 	if (fact <= all[0] / 2)
 	{
-		cmd = ft_realloc(cmd, all[0], all[0] / 2);
+		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] / 2);
 		all[0] /= 2;
 	}
 	(fact - 1 == point) ? cmd[--fact] = '\0' : 0;

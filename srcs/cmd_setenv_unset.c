@@ -6,11 +6,18 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/21 19:48:58 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 20:53:17 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+**@j came to all these functions as "flag" meaning we have flags in fucntions
+**and use the parameter for that. But in minishell commands env, setenv and
+**unsetenv do not have flags. Therefore, not to declare new parameters,
+**this one is reused. That is a bad practise but excuse me.
+*/
 
 /*
 **There are four cases for setenv programmed:
@@ -18,6 +25,10 @@
 **setenv FOO - argument without '=' - error message;
 **setenv FOO= - argument with '=' but no value;
 **setenv FOO=foo - argument with '=' with value;
+**
+**@s exists because of the norm and consists of (used here):
+**s.i - is counter in the command-string;
+**s.j - is counter in the environ - counter of lines.
 */
 
 void				cmd_setenv(char *cmd, int j)
@@ -34,7 +45,8 @@ void				cmd_setenv(char *cmd, int j)
 	s.i = 7;
 	if (ft_strchr(&cmd[s.i], '=') == NULL)
 	{
-		ft_putendl_fd("setenv: Environment variable can't be altered", 2);
+		ft_putstr_fd("minishell: setenv: ", 2);
+		ft_putendl_fd("Environment variable can't be altered.", 2);
 		return ;
 	}
 	tmp = ft_strsplit(&cmd[s.i], ' ');
@@ -73,7 +85,8 @@ void				cmd_setenv_environ_1(char *name, t_signs s, char **ptr)
 
 char				*cmd_setenv_environ_2(char *name, int i, char *env)
 {
-	int				len;
+	size_t			len;
+	size_t			tmp;
 
 	if (name[i + 1] == '\0')
 	{
@@ -83,12 +96,19 @@ char				*cmd_setenv_environ_2(char *name, int i, char *env)
 	else
 	{
 		len = ft_strlen(name);
-		if (ft_strlen(env) < len)
-			env = ft_realloc(env, ft_strlen(env), len + 1);
+		tmp = ft_strlen(env);
+		if (tmp < len)
+			env = ft_realloc(env, tmp, tmp, len + 1);
 		ft_strcpy(&env[i + 1], &name[i + 1]);
 	}
 	return (env);
 }
+
+/*
+**@s exists because of the norm and consists of (used here):
+**s.i - is counter in the command-string;
+**s.j - is counter in the environ - counter of lines.
+*/
 
 void				cmd_unsetenv(char *cmd, int j)
 {
@@ -99,7 +119,7 @@ void				cmd_unsetenv(char *cmd, int j)
 
 	if (cmd[8] == '\0')
 	{
-		ft_putendl_fd("unsetenv: Too few arguments", 2);
+		ft_putendl_fd("minishell: unsetenv: Too few arguments.", 2);
 		return ;
 	}
 	s.i = 8;

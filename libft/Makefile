@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+         #
+#    By: jcorwin <jcorwin@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/12/04 16:34:17 by sschmele          #+#    #+#              #
-#    Updated: 2019/09/17 20:53:53 by sschmele         ###   ########.fr        #
+#    Updated: 2019/05/13 19:30:45 by sschmele         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -99,29 +99,29 @@ INCLUDE = includes/libft.h
 
 all:		$(NAME)
 
-$(NAME):	$(OBJS) $(FT_PRINTF)
-	@echo "\x1b[32;01mCompiling libft...\x1b[32;01m"
-	@cp ft_printf/libftprintf.a $(NAME)
-	@ar rc $(NAME) $(OBJS)
-	@ranlib $(NAME)
-	@echo "\x1b[32;01mYour libft.a is ready.\x1b[32;01m"
+$(NAME):	text $(OBJS)
+			@make -C ./ft_printf
+			@cp ft_printf/libftprintf.a $(NAME)
+			@ar rc $(NAME) $(OBJS)
+			@ranlib $(NAME)
+			@echo "\x1b[32;01mYour libft.a is ready.\x1b[32;01m"
 
 $(OBJS):	$(DIR_O)/%.o: %.c $(INCLUDE)
-	@mkdir -p $(DIR_O)
-	@gcc $(FLAGS) -c -I includes -o $@ $<
+			@mkdir -p $(DIR_O)
+			@gcc $(FLAGS) -c -I includes -o $@ $<
 
-$(FT_PRINTF):
-	@make -C ./ft_printf
+text:
+			@echo "\x1b[32;01mCompiling libft...\x1b[32;01m"
 
 clean:
-	@echo "\033[34mDeliting libft o-files\033[34m"
-	@make clean --directory ./ft_printf
-	@/bin/rm -rf $(DIR_O)
+			@echo "\033[34mDeliting libft o-files\033[34m"
+			@make clean --directory ./ft_printf
+			@/bin/rm -rf $(DIR_O)
 
 fclean:	clean
-	@echo "\033[34mDeliting libft.a\033[34m"
-	@make fclean --directory ./ft_printf
-	@/bin/rm -f $(NAME)
+			@echo "\033[34mDeliting libft.a\033[34m"
+			@make fclean --directory ./ft_printf
+			@/bin/rm -f $(NAME)
 
 re: 	fclean all
 

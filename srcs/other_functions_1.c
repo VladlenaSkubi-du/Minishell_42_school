@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   other_functions.c                                  :+:      :+:    :+:   */
+/*   other_functions_1.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 18:48:27 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/12 17:41:58 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 19:26:13 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void		*ft_xmalloc(size_t size)
 	return (ptr);
 }
 
-void		*ft_realloc(void *subj, int len_subj, int len_needed)
+void		*ft_realloc(void *subj, size_t len_subj,
+	size_t len, size_t len_needed)
 {
 	void	*ptr;
 
@@ -36,8 +37,8 @@ void		*ft_realloc(void *subj, int len_subj, int len_needed)
 	}
 	if (len_needed > len_subj)
 	{
-		ft_memcpy(ptr, subj, len_subj);
-		ft_bzero(ptr + len_subj, len_needed - len_subj);
+		ft_memcpy(ptr, subj, len);
+		ft_bzero(ptr + len, len_needed - len);
 	}
 	else
 		ft_memcpy(ptr, subj, len_needed);
@@ -45,7 +46,7 @@ void		*ft_realloc(void *subj, int len_subj, int len_needed)
 	return (ptr);
 }
 
-void		get_terminal_width(unsigned int *term)
+void		get_terminal_width(size_t *term)
 {
 	struct winsize	sz;
 
@@ -79,7 +80,7 @@ int			count_env(void)
 **all[7] = usable in different functions;
 */
 
-void		init_all(unsigned int *all)
+void		init_all(size_t *all)
 {
 	all[0] = MAX;
 	all[1] = 0;
@@ -88,5 +89,4 @@ void		init_all(unsigned int *all)
 	all[4] = 0;
 	get_terminal_width(&all[5]);
 	all[7] = 0;
-	//printf("%d - %d - %d - %d - %d - %d\n", all[0], all[1], all[2], all[3], all[4], all[5]);
 }

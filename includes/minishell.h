@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/21 22:11:32 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/22 20:51:03 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ typedef struct			s_signs
 struct termios			g_backup_tty;
 
 /*
-**The list of working functions - file main.c
+**File main.c
 */
 
 void					set_noncanonical_input(void);
@@ -81,32 +81,48 @@ void					display_prompt(void);
 void					save_environment(void);
 
 /*
-**The list of working functions - file readline.c
+**File readline.c
 */
 
 int						readline();
-char					*del_symbol(char *cmd, unsigned int *all);
-void					esc_leftright(char c, char *cmd, unsigned int *all);
-char					*printable_parce(char c, char *cmd, unsigned int *all);
-int						nl_signals(char c, char *cmd, unsigned int *all);
+char					*del_symbol(char *cmd, size_t *all);
+void					esc_leftright(char c, char *cmd, size_t *all);
+char					*printable_parce(char c, char *cmd, size_t *all);
+int						nl_signals(char c, char *cmd, size_t *all);
 
 /*
-**The list of working functions - file cmd_readline_changes.c
+**File cmd_readline_changes.c
 */
 
-char					*str_add_symbol(char *arr, char add, unsigned int *all);
-char					*str_del_symbol(char *arr, unsigned int *all);
+char					*str_add_symbol(char *arr, char add, size_t *all);
+char					*str_del_symbol(char *arr, size_t *all);
 char					*help_str_change(char *cmd, char *swap,
 							int point, char add);
-void					help_nl_signal(unsigned int *all);
+void					help_nl_signal(size_t *all);
 
 /*
-**The list of working functions - file commands_check.c
+**The list of helpers for the commands that are to be implemented.
+**File special_signs.c
+*/
+
+int						special_signs_check(char *cmd, int len);
+char					*special_tilda_processing(char *cmd, int *len);
+char					*special_dollar_processing_1(char *cmd,
+							int *len, int i);
+char					*special_dollar_processing_2(char *cmd, int *len,
+							t_signs s, int len_f);
+char					*cmd_line_modification(char *cmd, int *len,
+							t_signs s, int len_full);
+
+/*
+**File commands_check.c
 */
 
 char					*check_command(char *cmd, int len);
 void					builtin_minishell(char *cmd, int i, int len);
-void					search_command(char *cmd);
+void					search_command(char *cmd, int fl);
+void					prepare_for_check(char *cmd, t_signs s);
+int						command_error(char *cmd, int fl);
 
 /*
 **The list of builtins we have to implement: echo, cd, setenv, unsetenv, env,
@@ -124,7 +140,7 @@ int						cmd_echo_escape(char *cmd, int i);
 int						cmd_echo_quatations(char c, int *flag);
 
 /*
-**File cmd_exit_cd.c
+**File cmd_exit_cd_env.c
 */
 
 void					cmd_env(char *cmd, int flag);
@@ -144,24 +160,24 @@ void					cmd_unsetenv(char *cmd, int flag);
 void					cmd_unsetenv_environ(char *name, t_signs s, char **ptr);
 
 /*
-**The list of helpers for the build-in-commands that are to be implemented
-**processing: file special_signs.c
+**Dealing with the commands which are not builtin we had to implement.
+**File cmd_nonbuiltin processing.c
 */
 
-int 					special_signs_check(char *cmd, int len);
-char					*special_dollar_processing_1(char *cmd, int *len, int i);
-char					*special_dollar_processing_2(char *cmd, int *len, t_signs s, int len_f);
-char					*special_tilda_processing(char *cmd, int *len);
-char					*cmd_line_modification(char *cmd, int *len, t_signs s, int len_full);
+int						check_cmd_name(char **cmd_full);
+int						find_cmd_in_path(char *path,
+							char **cmd_full, t_signs s);
+void					launch_program(char **cmd_full);
 
 /*
 **Other functions used - the file other_functions_1.c
 */
 
 void					*ft_xmalloc(size_t size);
-void					*ft_realloc(void *subj, int len_subj, int len_needed);
-void					get_terminal_width(unsigned int *term);
-void					init_all(unsigned int *all);
+void					*ft_realloc(void *subj, size_t len_subj,
+							size_t len, size_t len_needed);
+void					get_terminal_width(size_t *term);
+void					init_all(size_t *all);
 int						count_env(void);
 
 /*

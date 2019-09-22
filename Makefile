@@ -6,10 +6,11 @@ SOURCES =	main.c \
 			readline.c \
 			cmd_readline_changes.c \
 			commands_check.c \
+			special_signs.c \
 			cmd_echo.c \
 			cmd_exit_cd_env.c \
 			cmd_setenv_unset.c \
-			special_signs.c \
+			cmd_nonbuiltin_processing.c \
 			other_functions_1.c \
 			other_functions_2.c
 
@@ -25,26 +26,25 @@ LIBFT = libft/libft.a
 
 all:	$(NAME)
 
-$(NAME):	$(OBJS) $(LIBFT)
-	@echo "\x1b[32;01mCompiling minishell...\x1b[32;01m"
-	@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
-	@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
+$(NAME):		text $(OBJS)
+				@make -C ./libft
+				@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
+				@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
 
-$(OBJS):	$(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
-	@mkdir -p $(DIR_O)
-	gcc $(FLAGS) -c -I includes -o $@ $<
+text:
+				@echo "\x1b[32;01mCompiling your minishell...\x1b[0m"
 
-$(LIBFT):
-	@make -C ./libft
-
+$(OBJS):		$(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
+				@mkdir -p $(DIR_O)
+				gcc $(FLAGS) -c -I includes -o $@ $<
 clean:
-	@echo "\033[34mDeliting minishell o-files\033[0m"
-	@/bin/rm -Rf $(DIR_O)
-	@make clean --directory ./libft
+				@echo "\033[34mDeliting minishell o-files\033[0m"
+				@/bin/rm -Rf $(DIR_O)
+				@make clean --directory ./libft
 
 fclean: clean
-	@echo "\033[34mDeliting minishell binary\033[0m"
-	@/bin/rm -f $(NAME)
-	@make fclean --directory ./libft
+				@echo "\033[34mDeliting minishell binary\033[0m"
+				@/bin/rm -f $(NAME)
+				@make fclean --directory ./libft
 
 re:		fclean all
