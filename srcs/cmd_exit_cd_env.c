@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 16:59:04 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 19:55:38 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 18:28:14 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void			cmd_cd(char *cmd, int j)
 			ft_putendl_fd("minishell: cd: HOME not set.", 2);
 			return ;
 		}
-		s.main = &environ[s.j][5];
+		s.main = ft_strdup(&environ[s.j][5]);
 	}
 	else if (!(cmd[3] == '\0') && !(cmd[3] == '-' && cmd[4] == '\0'))
 		s.main = &cmd[3];
@@ -112,6 +112,8 @@ void			change_environ(char *cmd, t_signs s)
 	extern char	**environ;
 
 	s.len = 0;
+	if (cmd[2] && cmd[3] && !(cmd[3] == '-' && cmd[4] == '\0'))
+		s.main = getcwd(NULL, 1024);
 	if (environ[s.old][7] != '\0')
 		ft_bzero(&environ[s.old][7], (s.len = ft_strlen(&environ[s.old][7])));
 	if (s.len < (s.len1 = ft_strlen(&environ[s.pwd][4])))
@@ -123,5 +125,5 @@ void			change_environ(char *cmd, t_signs s)
 	if (s.len < (s.len1 = ft_strlen(s.main)))
 		environ[s.pwd] = ft_realloc(environ[s.pwd], 4, 4, s.len1 + 5);
 	ft_strcpy(&environ[s.pwd][4], s.main);
-	(cmd[2] && (cmd[3] == '-' && cmd[4] == '\0')) ? free(s.main) : 0;
+	free(s.main);
 }

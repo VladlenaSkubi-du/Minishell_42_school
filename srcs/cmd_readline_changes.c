@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 19:18:48 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 17:42:07 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ char		*str_del_symbol(char *cmd, size_t *all)
 	point = all[3] - PROMPT;
 	if (fact == 0)
 		return (cmd);
-	if (fact <= all[0] / 2)
+	if (fact < all[0] / 2)
 	{
 		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] / 2);
 		all[0] /= 2;

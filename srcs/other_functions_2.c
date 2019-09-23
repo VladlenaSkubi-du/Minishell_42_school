@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 18:48:27 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 20:54:55 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 17:49:18 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,5 +91,5 @@ void			many_commands(char *cmd)
 	i = -1;
 	while (scmd[++i])
 		scmd[i] = check_command(scmd[i], ft_strlen(scmd[i]));
-	ft_mapdel(scmd, i);
+	ft_arrdel(scmd);
 }

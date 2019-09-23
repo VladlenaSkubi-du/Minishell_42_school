@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 12:40:48 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 19:53:43 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 18:51:43 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,17 @@ int				special_signs_check(char *cmd, int len)
 	ft_bzero_int(count, 3);
 	while (cmd[++i])
 	{
-		if (cmd[i] == '\\' && ft_isprint(cmd[i + 1]))
-			i += 2;
+		if (cmd[i] == '\\' && cmd[i + 1] && ft_isprint(cmd[i + 1]))
+		{
+			i += 1;
+			continue ;
+		}
 		else if (cmd[i] == '\\' && ft_isprint(cmd[i + 1]) == 0)
 			return (-1);
 		(cmd[i] == '\"') ? count[1]++ : 0;
 		(cmd[i] == '\'') ? count[2]++ : 0;
-		(cmd[i] == '(' || cmd[i] == '{' || cmd[i] == '[') ? count[0]++ : 0;
-		(cmd[i] == ')' || cmd[i] == '}' || cmd[i] == ']') ? count[0]-- : 0;
+		(cmd[i] == '(' || cmd[i] == '{') ? count[0]++ : 0;
+		(cmd[i] == ')' || cmd[i] == '}') ? count[0]-- : 0;
 	}
 	if (count[0] != 0 || (count[1] % 2 && !count[2] % 2 && !count[2]) ||
 		(!count[1] % 2 && count[2] % 2 && !count[1]) ||
@@ -80,7 +83,7 @@ char			*special_tilda_processing(char *cmd, int *len)
 			cmd = cmd_line_modification(cmd, len, s, len_full);
 			return (cmd);
 		}
-		(!(cmd[s.i] == '\'' || cmd[s.i] == '"')) ? s.i++ : 0;
+		(!(cmd[s.i] == '\'' || cmd[s.i] == '"') && cmd[s.i]) ? s.i++ : 0;
 	}
 	return (cmd);
 }

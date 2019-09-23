@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 19:16:27 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 18:43:31 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,16 @@
 int					nl_signals(char c, char *cmd, size_t *all)
 {
 	char			*ptr;
+	char			*fin;
 
 	help_nl_signal(all);
 	ft_putchar('\n');
 	if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FL_NL))
 	{
-		ptr = ft_strtrim(cmd);
+		fin = ft_strdup(cmd);
 		free(cmd);
+		ptr = ft_strtrim(fin);
+		free(fin);
 		if (ptr[0] == '\0')
 		{
 			free(ptr);
@@ -36,7 +39,7 @@ int					nl_signals(char c, char *cmd, size_t *all)
 		if (all[1] & FL_SCMD)
 			many_commands(cmd);
 		else
-			cmd = check_command(cmd, all[0]);
+			cmd = check_command(cmd, ft_strlen(cmd));
 	}
 	free(cmd);
 	return (1);
@@ -55,7 +58,7 @@ char				*printable_parce(char c, char *cmd, size_t *all)
 	}
 	(all[2] <= all[3]) ? write(STDOUT_FILENO, &c, 1) : 0;
 	cmd = str_add_symbol(cmd, c, all);
-	(c == ';') ? all[1] |= FL_SCMD : 0;
+	all[1] = (c == ';') ? all[1] |= FL_SCMD : all[1];
 	return (cmd);
 }
 
@@ -116,7 +119,7 @@ char				*del_symbol(char *cmd, size_t *all)
 int					readline(void)
 {
 	char			*cmd;
-	size_t	all[8];
+	size_t			all[8];
 	unsigned char	c;
 
 	init_all(all);

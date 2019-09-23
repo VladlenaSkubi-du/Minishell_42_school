@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 20:51:03 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 16:32:41 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ int						check_cmd_name(char **cmd_full);
 int						find_cmd_in_path(char *path,
 							char **cmd_full, t_signs s);
 void					launch_program(char **cmd_full);
+void					alarm_exit(char **cmd_full, int fl);
 
 /*
 **Other functions used - the file other_functions_1.c

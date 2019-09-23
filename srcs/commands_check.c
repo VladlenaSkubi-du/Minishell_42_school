@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 20:46:55 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 19:21:42 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,12 @@ void				search_command(char *cmd, int fl)
 	extern char		**environ;
 	t_signs			s;
 
-	ft_putendl(cmd);
 	s.j = 0;
 	s.i = -1;
 	while (environ[s.j] && ft_strncmp(environ[s.j], "PATH=", 5) != 0)
 		s.j++;
-	if (environ[s.j] == NULL || environ[s.j][5] == '\0')
+	if ((environ[s.j] == NULL || environ[s.j][5] == '\0') &&
+		(!(cmd[0] == '/' || cmd[0] == '.')))
 	{
 		command_error(cmd, 0);
 		return ;
@@ -91,7 +91,8 @@ void				prepare_for_check(char *cmd, t_signs s)
 	char			**dirpath;
 	char			**cmd_components;
 
-	dirpath = ft_strsplit(&environ[s.j][5], ':');
+	dirpath = (environ[s.j] != NULL) ?
+		ft_strsplit(&environ[s.j][5], ':') : NULL;
 	cmd_components = ft_strsplit(cmd, ' ');
 	if ((cmd_components[0][0] == '/' || cmd_components[0][0] == '.')
 		&& check_cmd_name(cmd_components) <= 0)

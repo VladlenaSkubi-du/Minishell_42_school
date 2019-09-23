@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 15:30:59 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 20:51:28 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/23 19:51:02 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ int					check_cmd_name(char **cmd_full)
 		else if (tmp == 0 && !S_ISREG(info.st_mode))
 			return (command_error(cmd_full[0], 3));
 	}
-	if ((tmp = access(cmd_full[0], X_OK)) == -1)
-		return (command_error(cmd_full[0], 4));
 	launch_program(cmd_full);
 	return (0);
 }
@@ -44,7 +42,8 @@ int					find_cmd_in_path(char *path, char **cmd_full, t_signs s)
 	{
 		if (ft_strcmp(entry->d_name, cmd_full[0]) == 0)
 		{
-			ptr = ft_strdup(entry->d_name);
+			ptr = ft_strjoin(path, "/");
+			ptr = ft_strrejoin(ptr, cmd_full[0]);
 			free(cmd_full[0]);
 			cmd_full[0] = ptr;
 			launch_program(cmd_full);
@@ -58,5 +57,34 @@ int					find_cmd_in_path(char *path, char **cmd_full, t_signs s)
 
 void				launch_program(char **cmd_full)
 {
-	ft_putendl("LAUNCH");
+	pid_t			process;
+	extern char		**environ;
+
+	if ((access(cmd_full[0], X_OK)) == -1)
+	{
+		command_error(cmd_full[0], 4);
+		return ;
+	}
+	process = fork();
+	if (process == 0)
+	{
+		if (execve(cmd_full[0], cmd_full, environ) < 0)
+			alarm_exit(cmd_full, 1);
+	}
+	else if (process > 0)
+		waitpid(process, NULL, 0);
+	else
+		alarm_exit(cmd_full, 0);
+}
+
+void				alarm_exit(char **cmd_full, int fl)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd_full[0], 2);
+	if (fl == 0)
+		ft_putendl_fd(": Can't be forked", 2);
+	else
+		ft_putendl_fd(": Can't be executed", 2);
+	reset_canonical_input();
+	exit(1);
 }
