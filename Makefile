@@ -31,9 +31,9 @@ $(NAME): $(OBJS)
 	@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
 	@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
 
-$(OBJS): $(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
+$(OBJS): $(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h 
 	@mkdir -p $(DIR_O)
-	gcc $(FLAGS) -c -I includes -o $@ $<
+	gcc $(FLAGS) -c -I includes -I libft/includes -o $@ $<
 
 clean:
 	@echo "\033[34mDeliting minishell o-files\033[0m"

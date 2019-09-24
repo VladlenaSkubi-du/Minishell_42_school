@@ -53,3 +53,8 @@ dkms.conf
 
 #Binary
 minishell
+
+#VSCode
+.vscode/
+
+.DS_Store
