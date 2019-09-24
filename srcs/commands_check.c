@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 19:21:42 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 16:32:04 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char				*check_command(char *cmd, int len)
 	i = 0;
 	while (cmd[i] == ' ')
 		i++;
-	if ((tmp = special_signs_check(cmd + i, len)) == -1)
+	if ((tmp = special_signs_check(cmd + i)) == -1)
 	{
 		write(STDERR_FILENO,
 			"Readline call: minishell is too baby for that\n", 47);
@@ -60,14 +60,14 @@ void				builtin_minishell(char *cmd, int i, int len)
 	(ft_strncmp(cmd + i, "echo", 4) == 0) ?
 		cmd_echo(cmd + i, len - i, flag++) : 0;
 	(ft_strncmp(cmd + i, "cd", 2) == 0) ? cmd_cd(cmd + i, flag++) : 0;
-	(ft_strncmp(cmd + i, "env", 3) == 0) ? cmd_env(cmd + i, flag++) : 0;
+	(ft_strncmp(cmd + i, "env", 3) == 0) ? cmd_env(flag++) : 0;
 	(ft_strncmp(cmd + i, "setenv", 6) == 0) ? cmd_setenv(cmd + i, flag++) : 0;
 	(ft_strncmp(cmd + i, "unsetenv", 8) == 0) ?
 		cmd_unsetenv(cmd + i, flag++) : 0;
-	(flag == 0) ? search_command(cmd + i, flag) : 0;
+	(flag == 0) ? search_command(cmd + i) : 0;
 }
 
-void				search_command(char *cmd, int fl)
+void				search_command(char *cmd)
 {
 	extern char		**environ;
 	t_signs			s;
@@ -102,7 +102,7 @@ void				prepare_for_check(char *cmd, t_signs s)
 		return ;
 	}
 	while (dirpath[++s.i])
-		if (find_cmd_in_path(dirpath[s.i], cmd_components, s) == 0)
+		if (find_cmd_in_path(dirpath[s.i], cmd_components) == 0)
 			break ;
 	if (dirpath[s.i] == NULL)
 		command_error(cmd_components[0], 0);

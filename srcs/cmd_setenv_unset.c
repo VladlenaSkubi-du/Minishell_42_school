@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/03 16:09:42 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/22 20:53:17 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 16:28:57 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,11 @@ void				cmd_setenv(char *cmd, int j)
 	char			**ptr;
 	t_signs			s;
 
+	ptr = NULL;
+	j = 0;
 	if (cmd[6] == '\0')
 	{
-		cmd_env(cmd, 0);
+		cmd_env(0);
 		return ;
 	}
 	s.i = 7;
@@ -114,9 +116,9 @@ void				cmd_unsetenv(char *cmd, int j)
 {
 	extern char		**environ;
 	char			**tmp;
-	char			**ptr;
 	t_signs			s;
 
+	j = 0;
 	if (cmd[8] == '\0')
 	{
 		ft_putendl_fd("minishell: unsetenv: Too few arguments.", 2);
@@ -127,11 +129,11 @@ void				cmd_unsetenv(char *cmd, int j)
 	s.i = 0;
 	s.j = -1;
 	while (tmp[s.i])
-		cmd_unsetenv_environ(tmp[s.i++], s, ptr);
+		cmd_unsetenv_environ(tmp[s.i++], s);
 	ft_arrdel(tmp);
 }
 
-void				cmd_unsetenv_environ(char *name, t_signs s, char **ptr)
+void				cmd_unsetenv_environ(char *name, t_signs s)
 {
 	extern char		**environ;
 

@@ -6,14 +6,13 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 16:32:41 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 14:03:41 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>     //DELETE
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -56,8 +55,8 @@ typedef struct			s_signs
 **Beginning "ECHO" - used in echo-cmd-processing
 */
 
-# define MAX			3
-# define PROMPT			3
+# define MAX			100
+# define PROMPT			11
 # define FL_NL			0x1
 # define FL_SCMD		0x2
 # define FL_ESC			0x4
@@ -86,7 +85,7 @@ void					save_environment(void);
 
 int						readline();
 char					*del_symbol(char *cmd, size_t *all);
-void					esc_leftright(char c, char *cmd, size_t *all);
+void					esc_leftright(char c, size_t *all);
 char					*printable_parce(char c, char *cmd, size_t *all);
 int						nl_signals(char c, char *cmd, size_t *all);
 
@@ -105,7 +104,7 @@ void					help_nl_signal(size_t *all);
 **File special_signs.c
 */
 
-int						special_signs_check(char *cmd, int len);
+int						special_signs_check(char *cmd);
 char					*special_tilda_processing(char *cmd, int *len);
 char					*special_dollar_processing_1(char *cmd,
 							int *len, int i);
@@ -120,7 +119,7 @@ char					*cmd_line_modification(char *cmd, int *len,
 
 char					*check_command(char *cmd, int len);
 void					builtin_minishell(char *cmd, int i, int len);
-void					search_command(char *cmd, int fl);
+void					search_command(char *cmd);
 void					prepare_for_check(char *cmd, t_signs s);
 int						command_error(char *cmd, int fl);
 
@@ -143,7 +142,7 @@ int						cmd_echo_quatations(char c, int *flag);
 **File cmd_exit_cd_env.c
 */
 
-void					cmd_env(char *cmd, int flag);
+void					cmd_env(int flag);
 void					cmd_exit(char *cmd);
 void					cmd_cd(char *cmd, int flag);
 void					change_dir(char *cmd, t_signs s);
@@ -153,11 +152,11 @@ void					change_environ(char *cmd, t_signs s);
 **File cmd_setenv_unset.c
 */
 
-void					cmd_setenv(char *cmd, int flag);
+void					cmd_setenv(char *cmd, int j);
 void					cmd_setenv_environ_1(char *name, t_signs s, char **ptr);
 char					*cmd_setenv_environ_2(char *name, int i, char *env);
 void					cmd_unsetenv(char *cmd, int flag);
-void					cmd_unsetenv_environ(char *name, t_signs s, char **ptr);
+void					cmd_unsetenv_environ(char *name, t_signs s);
 
 /*
 **Dealing with the commands which are not builtin we had to implement.
@@ -166,7 +165,7 @@ void					cmd_unsetenv_environ(char *name, t_signs s, char **ptr);
 
 int						check_cmd_name(char **cmd_full);
 int						find_cmd_in_path(char *path,
-							char **cmd_full, t_signs s);
+							char **cmd_full);
 void					launch_program(char **cmd_full);
 void					alarm_exit(char **cmd_full, int fl);
 

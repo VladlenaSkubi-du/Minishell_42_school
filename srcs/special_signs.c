@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 12:40:48 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 18:51:43 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 16:29:03 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 **count[2] - for single quatations.
 */
 
-int				special_signs_check(char *cmd, int len)
+int				special_signs_check(char *cmd)
 {
 	int			i;
 	int			count[3];
@@ -71,6 +71,7 @@ char			*special_tilda_processing(char *cmd, int *len)
 	s.fl = 0;
 	s.i = 0;
 	s.w = 1;
+	len_full = 0;
 	while (cmd[s.i])
 	{
 		if (cmd[s.i] == '"' || cmd[s.i] == '\'')
@@ -93,6 +94,7 @@ char			*special_dollar_processing_1(char *cmd, int *len, int i)
 	t_signs		s;
 	int			len_full;
 
+	len_full = 0;
 	s.w = 1;
 	if (((s.main = ft_strchr(cmd + i, '$')) == NULL)
 		|| (s.main != NULL && (s.main[1] == '\0' || s.main[1] == ' ')))
@@ -141,7 +143,7 @@ char			*cmd_line_modification(char *c, int *len,
 	char		*cmd_e;
 	extern char	**environ;
 
-	if (s.fl == 1)
+	if ((cmd_e = NULL) && s.fl == 1)
 		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w + 1) : NULL;
 	else if (s.fl == 2 || s.fl == 3)
 		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w) : NULL;

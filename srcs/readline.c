@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 18:43:31 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 14:15:11 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char				*printable_parce(char c, char *cmd, size_t *all)
 **Here we react to a "<" and ">" signal.
 */
 
-void				esc_leftright(char c, char *cmd, size_t *all)
+void				esc_leftright(char c, size_t *all)
 {
 	(c == 91 && (all[1] & FL_ESC)) ? all[1] |= FL_OSQBRK : 0;
 	if ((c == 'D' || c == 'B') && (all[1] & FL_ESC) &&
@@ -133,7 +133,7 @@ int					readline(void)
 		if (ft_isprint(c) && !(all[1] & FL_ESC))
 			cmd = printable_parce(c, cmd, all);
 		(c == '\033') ? all[1] |= FL_ESC : 0;
-		(all[1] & FL_ESC) ? esc_leftright(c, cmd, all) : 0;
+		(all[1] & FL_ESC) ? esc_leftright(c, all) : 0;
 		((c == 'D' || c == 'C' || c == 'A' || c == 'B') &&
 			(all[1] & FL_ESC)) ? all[1] ^= FL_ESC : 0;
 		all[4] = (all[2] >= all[5]) ? all[2] / all[5] : 0;

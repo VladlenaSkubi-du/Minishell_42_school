@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 18:48:27 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 17:49:18 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 13:35:44 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,15 @@ void			many_commands(char *cmd)
 	while (scmd[++i])
 	{
 		ptr = ft_strtrim(scmd[i]);
-		free(scmd[i]);
 		if (ptr[0] == '\0')
 		{
 			free(ptr);
 			ft_putstr_fd("minishell: ", 2);
 			ft_putendl_fd("Syntax error near unexpected token `;'.", 2);
+			ft_arrdel(scmd);
 			return ;
 		}
+		free(scmd[i]);
 		scmd[i] = ptr;
 	}
 	i = -1;

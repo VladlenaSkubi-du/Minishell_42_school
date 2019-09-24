@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 15:30:59 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 19:51:02 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 16:31:54 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int					check_cmd_name(char **cmd_full)
 	return (0);
 }
 
-int					find_cmd_in_path(char *path, char **cmd_full, t_signs s)
+int					find_cmd_in_path(char *path, char **cmd_full)
 {
 	DIR				*path_dir;
 	struct dirent	*entry;
@@ -59,6 +59,7 @@ void				launch_program(char **cmd_full)
 {
 	pid_t			process;
 	extern char		**environ;
+	char			c;
 
 	if ((access(cmd_full[0], X_OK)) == -1)
 	{

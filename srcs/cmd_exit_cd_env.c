@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 16:59:04 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/23 18:28:14 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 15:42:59 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 **this one is reused. That is a bad practise but excuse me.
 */
 
-void			cmd_env(char *cmd, int j)
+void			cmd_env(int j)
 {
 	extern char	**environ;
 
@@ -64,7 +64,7 @@ void			cmd_cd(char *cmd, int j)
 	s.old = 0;
 	while (environ[s.old] && ft_strncmp(environ[s.old], "OLDPWD=", 7) != 0)
 		s.old++;
-	if (cmd[2] == '\0')
+	if ((j = 0) == 0 && cmd[2] == '\0')
 	{
 		s.j = 0;
 		while (environ[s.j] && ft_strncmp(environ[s.j], "HOME=", 5) != 0)
@@ -84,7 +84,6 @@ void			cmd_cd(char *cmd, int j)
 void			change_dir(char *cmd, t_signs s)
 {
 	extern char	**environ;
-	char		**ptr;
 
 	if (cmd[2] && (cmd[3] == '-' && cmd[4] == '\0'))
 	{
