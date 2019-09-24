@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/14 16:59:04 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 15:42:59 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 17:32:28 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,7 @@ void			change_dir(char *cmd, t_signs s)
 	}
 	if ((s.w = chdir(s.main)) < 0)
 	{
-		ft_putstr_fd("minishell: cd: No such file or directory: ", 2);
-		ft_putendl_fd(s.main, 2);
+		ft_putendl_fd("minishell: cd: Can't change the directory", 2);
 		return ;
 	}
 	if (environ[s.old] == NULL)

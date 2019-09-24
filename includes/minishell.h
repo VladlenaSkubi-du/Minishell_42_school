@@ -6,12 +6,14 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 14:03:41 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 17:09:46 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+#include <stdio.h> //DELETE
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -97,7 +99,7 @@ char					*str_add_symbol(char *arr, char add, size_t *all);
 char					*str_del_symbol(char *arr, size_t *all);
 char					*help_str_change(char *cmd, char *swap,
 							int point, char add);
-void					help_nl_signal(size_t *all);
+void					help_nl_signal(size_t *all, char c);
 
 /*
 **The list of helpers for the commands that are to be implemented.
@@ -168,6 +170,7 @@ int						find_cmd_in_path(char *path,
 							char **cmd_full);
 void					launch_program(char **cmd_full);
 void					alarm_exit(char **cmd_full, int fl);
+void					handle_signal(int sig);
 
 /*
 **Other functions used - the file other_functions_1.c

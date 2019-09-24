@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:40:20 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/16 17:11:57 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 16:58:55 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,10 @@ int					main(void)
 	extern char		**environ;
 
 	save_environment();
-	set_noncanonical_input();
 	while (1)
 	{
+		signal(SIGINT, handle_signal);
+		set_noncanonical_input();
 		display_prompt();
 		if (readline() == 1)
 			continue;

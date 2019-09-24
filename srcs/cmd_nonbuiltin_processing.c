@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 15:30:59 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 16:31:54 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 17:41:17 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,13 @@ void				launch_program(char **cmd_full)
 {
 	pid_t			process;
 	extern char		**environ;
-	char			c;
 
 	if ((access(cmd_full[0], X_OK)) == -1)
 	{
 		command_error(cmd_full[0], 4);
 		return ;
 	}
+	signal(SIGINT, handle_signal);
 	process = fork();
 	if (process == 0)
 	{
@@ -80,12 +80,23 @@ void				launch_program(char **cmd_full)
 
 void				alarm_exit(char **cmd_full, int fl)
 {
+	extern char		**environ;
+
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd_full[0], 2);
 	if (fl == 0)
 		ft_putendl_fd(": Can't be forked", 2);
 	else
 		ft_putendl_fd(": Can't be executed", 2);
-	reset_canonical_input();
+	ft_arrdel(environ);
 	exit(1);
+}
+
+void				handle_signal(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_putchar('\n');
+		return ;
+	}
 }

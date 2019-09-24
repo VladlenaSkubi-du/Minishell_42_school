@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 14:15:11 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 17:10:30 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ int					nl_signals(char c, char *cmd, size_t *all)
 	char			*ptr;
 	char			*fin;
 
-	help_nl_signal(all);
-	ft_putchar('\n');
+	help_nl_signal(all, c);
 	if ((c == '\n' || c == 10 || c == 13) && !(all[1] & FL_NL))
 	{
+		reset_canonical_input();
 		fin = ft_strdup(cmd);
 		free(cmd);
 		ptr = ft_strtrim(fin);
@@ -35,8 +35,7 @@ int					nl_signals(char c, char *cmd, size_t *all)
 			free(ptr);
 			return (1);
 		}
-		cmd = ptr;
-		if (all[1] & FL_SCMD)
+		if ((cmd = ptr) == ptr && all[1] & FL_SCMD)
 			many_commands(cmd);
 		else
 			cmd = check_command(cmd, ft_strlen(cmd));

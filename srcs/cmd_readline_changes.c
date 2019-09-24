@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 13:46:54 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 17:09:05 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 **end of the cmd-line
 */
 
-void		help_nl_signal(size_t *all)
+void		help_nl_signal(size_t *all, char c)
 {
 	if (all[4] && all[3] != all[2])
 	{
@@ -27,8 +27,10 @@ void		help_nl_signal(size_t *all)
 			write(STDOUT_FILENO, "\033[C", 3);
 			all[3]++;
 		}
-		ft_putchar('\n');
 	}
+	ft_putchar('\n');
+	if (c == 3 && !(all[1] & FL_NL))
+		reset_canonical_input();
 }
 
 /*
