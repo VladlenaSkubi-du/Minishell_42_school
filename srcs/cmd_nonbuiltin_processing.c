@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/22 15:30:59 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 17:41:17 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 19:42:29 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ int					find_cmd_in_path(char *path, char **cmd_full)
 	char			*ptr;
 
 	if ((path_dir = opendir(path)) == NULL)
+	{
+		closedir(path_dir);
 		return (-1);
+	}
 	while ((entry = readdir(path_dir)))
 	{
 		if (ft_strcmp(entry->d_name, cmd_full[0]) == 0)

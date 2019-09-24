@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:39:51 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 17:10:30 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 21:07:09 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int					readline(void)
 		(c == 127 && all[2] > 0 && all[3] > PROMPT) ?
 			cmd = del_symbol(cmd, all) : 0;
 		if (ft_isprint(c) == 0)
-			;
+			cmd = non_printable_output(c, cmd, all);
 	}
 	return (0);
 }

@@ -1,9 +1,10 @@
 NAME = minishell
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -g #-Wall -Wextra -Werror
 
 SOURCES =	main.c \
 			readline.c \
+			auto_completion.c \
 			cmd_readline_changes.c \
 			commands_check.c \
 			special_signs.c \
@@ -31,7 +32,7 @@ $(NAME): $(OBJS)
 	@gcc $(FLAGS) $(OBJS) -o $(NAME) libft/libft.a
 	@echo "\x1b[32;01mYour minishell is ready\x1b[0m"
 
-$(OBJS): $(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h 
+$(OBJS): $(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
 	@mkdir -p $(DIR_O)
 	gcc $(FLAGS) -c -I includes -I libft/includes -o $@ $<
 

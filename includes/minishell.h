@@ -6,14 +6,12 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 17:09:46 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/24 21:17:48 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
-#include <stdio.h> //DELETE
 
 # include <unistd.h>
 # include <stdlib.h>
@@ -58,7 +56,7 @@ typedef struct			s_signs
 */
 
 # define MAX			100
-# define PROMPT			11
+# define PROMPT			12
 # define FL_NL			0x1
 # define FL_SCMD		0x2
 # define FL_ESC			0x4
@@ -90,6 +88,14 @@ char					*del_symbol(char *cmd, size_t *all);
 void					esc_leftright(char c, size_t *all);
 char					*printable_parce(char c, char *cmd, size_t *all);
 int						nl_signals(char c, char *cmd, size_t *all);
+
+/*
+**File auto_completion.c
+*/
+
+char					*non_printable_output(char c, char *cmd, size_t *all);
+char					*find_in_path_readline(char *path, char *cmd);
+char					*complete_cmd(char *cmd, char *name, size_t *all);
 
 /*
 **File cmd_readline_changes.c
