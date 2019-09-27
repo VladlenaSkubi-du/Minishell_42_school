@@ -1,6 +1,6 @@
 NAME = minishell
 
-FLAGS = -g #-Wall -Wextra -Werror
+FLAGS = -g -Wall -Wextra -Werror
 
 SOURCES =	main.c \
 			readline.c \

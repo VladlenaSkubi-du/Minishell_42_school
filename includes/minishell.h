@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 21:17:48 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/27 18:04:00 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ typedef struct			s_signs
 **Beginning "ECHO" - used in echo-cmd-processing
 */
 
-# define MAX			100
+# define MAX			4
 # define PROMPT			12
 # define FL_NL			0x1
 # define FL_SCMD		0x2

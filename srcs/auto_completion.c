@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/24 18:24:29 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 21:18:39 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/27 18:01:23 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ char				*non_printable_output(char c, char *cmd, size_t *all)
 				break ;
 		if (dirpath != NULL && ptr != NULL)
 			cmd = complete_cmd(cmd, ptr, all);
-		free(ptr);
 		ft_arrdel(dirpath);
 	}
 	return (cmd);
@@ -71,23 +70,23 @@ char				*complete_cmd(char *cmd, char *name, size_t *all)
 {
 	size_t			len;
 	size_t			len_1;
-	char			*tmp;
 
 	len = ft_strlen(name);
 	len_1 = ft_strlen(cmd);
-	if (len > all[0])
+	if (len >= all[0])
 	{
 		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] * 2);
 		all[0] *= 2;
 	}
 	len -= ft_strlen(cmd);
 	ft_putstr(name + len_1);
-	len++;
-	while (--len)
+	while (len--)
 	{
 		all[3]++;
 		all[2]++;
 	}
+	all[3]++;
 	ft_strlcat(cmd, name + len_1, all[0]);
+	free(name);
 	return (cmd);
 }
