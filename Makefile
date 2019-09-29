@@ -8,6 +8,7 @@ SOURCES =	main.c \
 			cmd_readline_changes.c \
 			commands_check.c \
 			special_signs.c \
+			cmd_line_modification.c \
 			cmd_echo.c \
 			cmd_exit_cd_env.c \
 			cmd_setenv_unset.c \

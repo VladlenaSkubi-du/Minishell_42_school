@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/25 11:50:11 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/29 15:51:16 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:36:07 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char				*check_command(char *cmd, int len)
 		cmd = special_tilda_processing(cmd, &len);
 		if (tmp == len)
 			break ;
+		if (len == 0)
+			return (cmd);
 	}
 	builtin_minishell(cmd, i, len);
 	return (cmd);

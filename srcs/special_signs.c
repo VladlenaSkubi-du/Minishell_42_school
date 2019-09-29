@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 12:40:48 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/24 16:29:03 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:49:26 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,13 +65,11 @@ char			*special_tilda_processing(char *cmd, int *len)
 {
 	short		flag;
 	t_signs		s;
-	int			len_full;
 
 	flag = 0;
 	s.fl = 0;
 	s.i = 0;
 	s.w = 1;
-	len_full = 0;
 	while (cmd[s.i])
 	{
 		if (cmd[s.i] == '"' || cmd[s.i] == '\'')
@@ -81,7 +79,7 @@ char			*special_tilda_processing(char *cmd, int *len)
 		}
 		if (cmd[s.i] == '~' && flag == 0)
 		{
-			cmd = cmd_line_modification(cmd, len, s, len_full);
+			cmd = cmd_line_modification(cmd, len, s);
 			return (cmd);
 		}
 		(!(cmd[s.i] == '\'' || cmd[s.i] == '"') && cmd[s.i]) ? s.i++ : 0;
@@ -92,9 +90,7 @@ char			*special_tilda_processing(char *cmd, int *len)
 char			*special_dollar_processing_1(char *cmd, int *len, int i)
 {
 	t_signs		s;
-	int			len_full;
 
-	len_full = 0;
 	s.w = 1;
 	if (((s.main = ft_strchr(cmd + i, '$')) == NULL)
 		|| (s.main != NULL && (s.main[1] == '\0' || s.main[1] == ' ')))
@@ -106,15 +102,15 @@ char			*special_dollar_processing_1(char *cmd, int *len, int i)
 	{
 		s.fl = 1;
 		s.main = ft_itoa((int)getpid());
-		cmd = cmd_line_modification(cmd, len, s, len_full);
+		cmd = cmd_line_modification(cmd, len, s);
 		return (cmd);
 	}
-	cmd = special_dollar_processing_2(cmd, len, s, len_full);
+	cmd = special_dollar_processing_2(cmd, len, s);
 	return (cmd);
 }
 
 char			*special_dollar_processing_2(char *cmd, int *len,
-					t_signs s, int len_f)
+					t_signs s)
 {
 	extern char	**environ;
 
@@ -133,12 +129,12 @@ char			*special_dollar_processing_2(char *cmd, int *len,
 		s.fl = 3;
 		s.main = NULL;
 	}
-	cmd = cmd_line_modification(cmd, len, s, len_f);
+	cmd = cmd_line_modification(cmd, len, s);
 	return (cmd);
 }
 
 char			*cmd_line_modification(char *c, int *len,
-					t_signs s, int len_f)
+					t_signs s)
 {
 	char		*cmd_e;
 	extern char	**environ;
@@ -152,17 +148,17 @@ char			*cmd_line_modification(char *c, int *len,
 		while (environ[s.j] && !(ft_strncmp(environ[s.j], "HOME", 4) == 0
 			&& environ[s.j][4] == '='))
 			s.j++;
+		if (environ[s.j] == NULL)
+		{
+			ft_putendl_fd("minishell: HOME not set.", 2);
+			*len = 0;
+			return (c);
+		}
 		cmd_e = (c[s.i + s.w]) ? ft_strdup(c + s.i + s.w) : NULL;
 		s.main = ft_strdup(&environ[s.j][5]);
 	}
-	len_f = ft_strlen(cmd_e) + s.i + ft_strlen(s.main);
-	(c[s.i] != 0) ? ft_bzero(c + s.i, ft_strlen(c) - s.i) : 0;
-	c = (len_f + 1 > *len) ? ft_realloc(c, *len, ft_strlen(c), len_f + 1) : c;
-	(s.main != NULL) ? c = ft_strcat(c, s.main) : 0;
-	if (cmd_e != NULL)
-		c = ft_strcat(c, (s.fl == 3 && *cmd_e == ' ') ? &cmd_e[1] : cmd_e);
-	(cmd_e != NULL) ? free(cmd_e) : 0;
-	(s.main != NULL) ? free(s.main) : 0;
-	*len = len_f;
+	s.w = ft_strlen(cmd_e) + s.i + ft_strlen(s.main);
+	c = cmd_line_modification_2(c, cmd_e, len, s);
+	*len = s.w;
 	return (c);
 }

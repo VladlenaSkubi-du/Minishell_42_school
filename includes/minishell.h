@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/23 15:41:23 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/29 16:24:16 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:34:37 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,17 @@ char					*special_tilda_processing(char *cmd, int *len);
 char					*special_dollar_processing_1(char *cmd,
 							int *len, int i);
 char					*special_dollar_processing_2(char *cmd, int *len,
-							t_signs s, int len_f);
+							t_signs s);
 char					*cmd_line_modification(char *cmd, int *len,
-							t_signs s, int len_full);
+							t_signs s);
+
+/*
+**File that was created only because of the norm and a bug detected in last minutes.
+**File cmd_line_modification.c
+*/
+
+char					*cmd_line_modification_2(char *c, char *cmd_e,
+							int *len, t_signs s);
 
 /*
 **File commands_check.c
