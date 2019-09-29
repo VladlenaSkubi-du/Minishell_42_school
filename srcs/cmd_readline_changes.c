@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/01 13:38:26 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/27 17:54:24 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/29 16:18:57 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ char		*str_del_symbol(char *cmd, size_t *all)
 
 	fact = all[2] - PROMPT;
 	point = all[3] - PROMPT;
+	swap = NULL;
 	if (fact == 0)
 		return (cmd);
 	if (fact < all[0] / 2)
@@ -151,10 +152,10 @@ char		*str_del_symbol(char *cmd, size_t *all)
 		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] / 2);
 		all[0] /= 2;
 	}
-	(fact - 1 == point) ? cmd[--fact] = '\0' : 0;
+	(fact - 1 == point && !(fact == '\0')) ? cmd[--fact] = '\0' : 0;
 	if (fact - 1 > point)
 	{
-		swap = ft_strdup(cmd + point + 1);
+		(cmd + point + 1) ? swap = ft_strdup(cmd + point + 1) : 0;
 		cmd = help_str_change(cmd, swap, point, -1);
 		free(swap);
 	}

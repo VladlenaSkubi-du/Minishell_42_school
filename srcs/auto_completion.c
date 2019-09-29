@@ -6,7 +6,7 @@
 /*   By: sschmele <sschmele@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/24 18:24:29 by sschmele          #+#    #+#             */
-/*   Updated: 2019/09/27 18:01:23 by sschmele         ###   ########.fr       */
+/*   Updated: 2019/09/29 16:22:44 by sschmele         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ char				*find_in_path_readline(char *path, char *cmd)
 	size_t			len;
 	char			*ptr;
 
+	len = 0;
+	ptr = NULL;
 	if ((path_dir = opendir(path)) == NULL)
 	{
 		closedir(path_dir);
@@ -73,20 +75,23 @@ char				*complete_cmd(char *cmd, char *name, size_t *all)
 
 	len = ft_strlen(name);
 	len_1 = ft_strlen(cmd);
-	if (len >= all[0])
-	{
-		cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] * 2);
-		all[0] *= 2;
-	}
+	all[7] = 0;
+	if (all[0] < len)
+		while (all[0] < len + 1)
+		{
+			cmd = ft_realloc(cmd, all[0], ft_strlen(cmd), all[0] * 2);
+			all[0] *= 2;
+		}
 	len -= ft_strlen(cmd);
 	ft_putstr(name + len_1);
 	while (len--)
-	{
-		all[3]++;
 		all[2]++;
+	all[3] = all[2];
+	while (name[len_1 + all[7]])
+	{
+		cmd[len_1 + all[7]] = name[len_1 + all[7]];
+		all[7]++;
 	}
-	all[3]++;
-	ft_strlcat(cmd, name + len_1, all[0]);
 	free(name);
 	return (cmd);
 }
