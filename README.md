@@ -1,4 +1,4 @@
-# Minishell_42_school
+# Minishell_42school
 Minishell project is a mini UNIX command interpreter. It displays a prompt after that a user types his/her commands.
 
 This minishell works with simple command lines, does limited work with environment, executes programms defined in PATH, manages expansions $ and ~.
