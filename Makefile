@@ -1,6 +1,6 @@
 NAME = minishell
 
-FLAGS = -g -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 
 SOURCES =	main.c \
 			readline.c \
@@ -35,15 +35,15 @@ $(NAME): $(OBJS)
 
 $(OBJS): $(DIR_O)/%.o: $(DIR_S)/%.c includes/minishell.h
 	@mkdir -p $(DIR_O)
-	gcc $(FLAGS) -c -I includes -I libft/includes -o $@ $<
+	@gcc $(FLAGS) -c -I includes -I libft/includes -o $@ $<
 
 clean:
-	@echo "\033[34mDeliting minishell o-files\033[0m"
+	@echo "\033[34mDeleting minishell o-files\033[0m"
 	@/bin/rm -Rf $(DIR_O)
 	@make clean --directory ./libft
 
 fclean: clean
-	@echo "\033[34mDeliting minishell binary\033[0m"
+	@echo "\033[34mDeleting minishell binary\033[0m"
 	@/bin/rm -f $(NAME)
 	@make fclean --directory ./libft
 
